@@ -1,8 +1,6 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
 import type { Pokemon } from '../../../app';
 
-export const prerender = true;
-
 export const GET: RequestHandler = async ({ platform }) => {
 	try {
 		if (!platform?.env?.pokemon) {
