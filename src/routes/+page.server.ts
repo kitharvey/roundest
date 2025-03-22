@@ -9,9 +9,8 @@ export const load: PageServerLoad = async ({ platform, locals }) => {
 	}
 
 	const kv = platform.env.pokemon as KVNamespace;
-	locals.matchups = await getMatchups(kv, 1);
-
-	const matchups = locals.matchups;
+	// Use locals.matchups if set by hooks, otherwise fetch directly
+	const matchups = locals.matchups?.length ? locals.matchups : await getMatchups(kv, 1);
 	return { matchups };
 };
 
