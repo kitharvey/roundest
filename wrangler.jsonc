@@ -15,10 +15,10 @@
 	"kv_namespaces": [
 		{
 			"binding": "pokemon",
-			"id": "fd84c2a8052b425f8678ca3bd4e0ec1a"
+			// "id": "fd84c2a8052b425f8678ca3bd4e0ec1a"
 
 			// preview id
-			// "id": "046a5e986e264a839746339bc796a342"
+			"id": "046a5e986e264a839746339bc796a342"
 		}
 	],
 	"vars": {

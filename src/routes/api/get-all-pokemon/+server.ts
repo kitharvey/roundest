@@ -7,6 +7,9 @@ export const GET: RequestHandler = async ({ platform }) => {
 			return json({ error: 'KV namespace not found' }, { status: 500 });
 		}
 		const kv = platform.env.pokemon;
+		const totalStr = await kv.get('total_pokemon');
+
+		console.log('Total Pokémon:', totalStr);
 
 		const keys = await kv.list({ prefix: 'pokemon:' });
 		const pokemonPromises = keys.keys.map(async (key) => {
@@ -17,13 +20,9 @@ export const GET: RequestHandler = async ({ platform }) => {
 			return null;
 		});
 
-		const pokemonData = (await Promise.all(pokemonPromises)).filter(
-			(pokemon): pokemon is Pokemon => pokemon !== null
-		);
+		const pokemonData = await Promise.all(pokemonPromises);
 
-		pokemonData.sort((a, b) => a.id - b.id);
-
-		return json({ pokemon: pokemonData, total: pokemonData.length });
+		return json({ pokemon: pokemonData, total: pokemonData.length, keys });
 	} catch (error) {
 		console.error('Error fetching Pokemon data:', error);
 		return json({ error: 'Failed to fetch Pokemon data' }, { status: 500 });

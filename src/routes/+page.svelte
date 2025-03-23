@@ -5,14 +5,10 @@
 
 	let { data }: PageProps = $props();
 	let { matchups } = $derived(data);
-
-	$effect(() => {
-		console.log({ matchups });
-	});
 </script>
 
 <div class="matchups">
-	{#if matchups}
+	{#if matchups && matchups[0]}
 		<form method="POST" use:enhance>
 			<input type="hidden" name="pokemon1_id" value={matchups[0].pokemon1.id} />
 			<input type="hidden" name="pokemon2_id" value={matchups[0].pokemon2.id} />

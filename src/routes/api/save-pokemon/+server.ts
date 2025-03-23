@@ -14,11 +14,8 @@ interface PokemonResponse {
 interface PokemonDetails {
 	id: number;
 	sprites: {
-		other: {
-			'official-artwork': {
-				front_default: string;
-			};
-		};
+		front_default?: string;
+		[key: string]: any;
 	};
 }
 
@@ -29,122 +26,108 @@ async function fetchWithRetry(url: string, retries = 3, timeoutMs = 15000): Prom
 		const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
 		try {
-			console.log(`[Fetch Attempt] Attempting to fetch ${url} (Attempt ${i + 1}/${retries})...`);
+			console.log(`[Fetch Attempt] Fetching ${url} (Attempt ${i + 1}/${retries})...`);
 			const response = await fetch(url, { signal: controller.signal });
 			clearTimeout(timeoutId);
 
 			if (!response.ok) {
 				throw new Error(`HTTP error! status: ${response.status}`);
 			}
-			console.log(`[Fetch Success] Successfully fetched ${url}`);
+			console.log(`[Fetch Success] Fetched ${url}`);
 			return response;
 		} catch (error) {
 			if (i === retries - 1) throw error;
 			console.warn(`Retrying fetch for ${url} after error:`, error);
-			await new Promise((resolve) => setTimeout(resolve, 1000 * (i + 1))); // Exponential backoff
+			await new Promise((resolve) => setTimeout(resolve, 1000 * (i + 1)));
 		}
 	}
 	throw new Error('Max retries reached');
 }
 
 export const GET: RequestHandler = async ({ platform }) => {
-	try {
-		console.log('[Process Start] Starting to fetch Pokémon list...');
+	const logs: string[] = []; // Array to collect logs
 
-		// Check if KV namespace is available
+	try {
+		// Validate KV namespace
 		if (!platform?.env?.pokemon) {
+			logs.push('[KV Error] KV namespace not found');
 			console.error('[KV Error] KV namespace not found');
-			return json({ error: 'KV namespace not found' }, { status: 500 });
+			return json({ error: 'KV namespace not found', logs }, { status: 500 });
 		}
 
 		const kv = platform.env.pokemon;
-		console.log('KV namespace accessed successfully.');
+		logs.push('[Process Start] Syncing Generation 1 Pokémon...');
+		console.log('[Process Start] Syncing Generation 1 Pokémon...');
 
-		// Fetch the full list of Pokémon
-		const listResponse = await fetch('https://pokeapi.co/api/v2/pokemon?limit=10000');
+		// Step 2: Fetch Generation 1 Pokémon (IDs 1-151)
+		const listResponse = await fetch('https://pokeapi.co/api/v2/pokemon?limit=151&offset=0');
 		if (!listResponse.ok) {
+			logs.push(`[List Fetch Error] Failed to fetch Pokémon list: ${listResponse.statusText}`);
 			throw new Error(`Failed to fetch Pokémon list: ${listResponse.statusText}`);
 		}
-
 		const { results }: { results: PokemonResponse[] } = await listResponse.json();
-		console.log(`[List Fetch Success] Fetched Pokémon list with ${results.length} entries.`);
+		logs.push(`[List Fetch Success] Fetched ${results.length} Pokémon.`);
+		console.log(`[List Fetch Success] Fetched ${results.length} Pokémon.`);
 
-		// Extract IDs from URLs
-		const pokemonWithIds = results.map((pokemon) => ({
-			...pokemon,
-			id: parseInt(pokemon.url.split('/').slice(-2, -1)[0], 10)
-		}));
-		console.log('[ID Extraction] Extracted IDs from Pokémon URLs.');
-
-		// Get existing keys from KV
-		console.log('Fetching existing keys from KV storage...');
-		const existingKeys = await kv.list({ prefix: 'pokemon:' });
-		const existingIds = existingKeys.keys.map((key) => parseInt(key.name.split(':')[1], 10));
-		console.log(`Found ${existingIds.length} Pokémon already saved in KV.`);
-
-		// Filter missing Pokémon
-		const missingPokemon = pokemonWithIds.filter((p) => !existingIds.includes(p.id));
-		const totalMissing = missingPokemon.length;
-
-		if (totalMissing === 0) {
-			console.log('[Process Complete] All Pokémon are already saved.');
-			return json({ message: 'All Pokémon are already saved' });
-		}
-
-		console.log(`[Missing Pokémon] Found ${totalMissing} missing Pokémon to fetch and save.`);
-
-		// Process in batches of 10
-		const batchSize = 10;
+		// Step 3: Process Pokémon in batches
 		let savedCount = 0;
-
-		for (let i = 0; i < missingPokemon.length; i += batchSize) {
-			const batchNumber = Math.floor(i / batchSize) + 1;
-			const batch = missingPokemon.slice(i, i + batchSize);
-			console.log(`[Batch Start] Starting batch ${batchNumber} with ${batch.length} Pokémon...`);
+		const batchSize = 10;
+		for (let i = 0; i < results.length; i += batchSize) {
+			const batch = results.slice(i, i + batchSize);
+			logs.push(`[Batch Start] Processing ${batch.length} Pokémon...`);
+			console.log(`[Batch Start] Processing ${batch.length} Pokémon...`);
 
 			const promises = batch.map(async (pokemon) => {
-				console.log(`[Pokémon Processing] Processing Pokémon: ${pokemon.name} (ID: ${pokemon.id})`);
 				try {
 					const response = await fetchWithRetry(pokemon.url);
 					const details: PokemonDetails = await response.json();
-					console.log(`[Details Fetch Success] Fetched details for ${pokemon.name}`);
-
-					const image = details.sprites.other?.['official-artwork']?.front_default;
-					if (image) {
-						const pokemonData: Pokemon = { id: pokemon.id, name: pokemon.name, image };
-						console.log(`[KV Save] Saving ${pokemon.name} to KV...`);
-						await kv.put(`pokemon:${pokemon.id}`, JSON.stringify(pokemonData));
-						console.log(`[KV Save Success] Successfully saved ${pokemon.name} to KV`);
-						return true; // Success
-					} else {
-						console.warn(`No image found for ${pokemon.name}`);
-						return false; // No image, not saved
+					let image = details.sprites.front_default;
+					if (!image) {
+						image =
+							(Object.values(details.sprites).find(
+								(sprite) => typeof sprite === 'string'
+							) as string) || 'https://via.placeholder.com/96';
+						logs.push(
+							`[Sprite Warning] No front_default for ${pokemon.name}, using fallback: ${image}`
+						);
+						console.warn(
+							`[Sprite Warning] No front_default for ${pokemon.name}, using fallback: ${image}`
+						);
 					}
+					const pokemonData: Pokemon = { id: details.id, name: pokemon.name, image };
+					await kv.put(`pokemon:${details.id}`, JSON.stringify(pokemonData));
+					logs.push(`[KV Save] Saved ${pokemon.name} (ID: ${details.id})`);
+					console.log(`[KV Save] Saved ${pokemon.name} (ID: ${details.id})`);
+					return true;
 				} catch (error) {
-					console.error(`Failed to fetch or save ${pokemon.name}:`, error);
-					return false; // Failed
+					logs.push(`[Process Error] Failed to process ${pokemon.name}: ${String(error)}`);
+					console.error(`[Process Error] Failed to process ${pokemon.name}:`, error);
+					return false;
 				}
 			});
 
-			console.log(`[Batch Await] Awaiting batch ${batchNumber} completion...`);
-			const results = await Promise.all(promises);
-			const successfulSaves = results.filter(Boolean).length;
-			savedCount += successfulSaves;
-
+			const batchResults = await Promise.all(promises);
+			savedCount += batchResults.filter(Boolean).length;
+			logs.push(`[Batch Complete] Saved ${batchResults.filter(Boolean).length} Pokémon in batch.`);
 			console.log(
-				`[Batch Complete] Saved ${successfulSaves} Pokémon in batch ${batchNumber}. Total saved: ${savedCount}/${totalMissing} (${((savedCount / totalMissing) * 100).toFixed(2)}%)`
+				`[Batch Complete] Saved ${batchResults.filter(Boolean).length} Pokémon in batch.`
 			);
 		}
 
-		console.log('[Process Complete] All Pokémon have been processed.');
+		// Step 4: Update total count
+		await kv.put('total_pokemon', `${savedCount}`);
+		logs.push('[Total Update] Set total_pokemon to 151.');
+		console.log('[Total Update] Set total_pokemon to 151.');
 
-		const totalPokemon = await kv.list({ prefix: 'pokemon:' });
-		await kv.put('total_pokemon', totalPokemon.keys.length.toString());
-		console.log(`[Total Update] Updated total_pokemon to ${totalPokemon.keys.length}`);
-
-		return json({ message: 'Pokémon data saved successfully', saved: savedCount, totalMissing });
+		return json({
+			message: 'Generation 1 Pokémon processed successfully',
+			saved: savedCount,
+			total: 151,
+			logs // Include logs in the response
+		});
 	} catch (error) {
-		console.error('Error fetching or saving Pokémon data:', error);
-		return json({ error: 'Failed to fetch or save Pokémon data' }, { status: 500 });
+		logs.push(`[Process Error] Error in Pokémon sync: ${String(error)}`);
+		console.error('[Process Error] Error in Pokémon sync:', error);
+		return json({ error: 'Failed to process Pokémon data', logs }, { status: 500 });
 	}
 };
