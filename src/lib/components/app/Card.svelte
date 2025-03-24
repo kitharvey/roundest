@@ -18,13 +18,23 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		border: 1px solid #ccc;
+		border: 1px solid var(--border-color-light);
 		border-radius: 8px;
 		padding: 16px;
 		margin: 16px;
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-		background-color: #f8f8f8;
+		background-color: #fff;
 		width: 200px;
+		transition:
+			border-color 0.3s ease,
+			box-shadow 0.3s ease,
+			background-color 0.3s ease;
+	}
+
+	:global(body.dark) .card {
+		border-color: var(--border-color-dark);
+		background-color: #444;
+		box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
 	}
 
 	.info {
@@ -41,5 +51,12 @@
 		margin: 0;
 		font-size: 0.9em;
 		color: #666;
+	}
+
+	:global(body.dark) .info p {
+		color: #ccc;
+	}
+	:global(body.dark) .info h2 {
+		color: #ccc;
 	}
 </style>

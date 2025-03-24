@@ -1,7 +1,9 @@
-<script>
+<script lang="ts">
 	import Layout from '$lib/components/layout/Layout.svelte';
+
+	let { children } = $props();
 </script>
 
 <Layout>
-	<slot />
+	{@render children()}
 </Layout>

@@ -29,18 +29,23 @@
 <style>
 	img {
 		object-fit: contain;
+		display: block;
+	}
+
+	.card {
+		width: 150px;
+		height: 150px;
 		image-rendering: crisp-edges;
 		image-rendering: -moz-crisp-edges;
 		image-rendering: pixelated;
 	}
 
-	.card {
-		width: 200px;
-		height: 200px;
-	}
-
 	.thumb {
 		width: 50px;
 		height: 50px;
+	}
+
+	:global(body.dark) .card {
+		filter: brightness(1.1);
 	}
 </style>

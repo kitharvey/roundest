@@ -35,19 +35,62 @@
 </table>
 
 <style>
+	h1 {
+		color: var(--primary-color-light);
+		text-align: center;
+		margin-bottom: 20px;
+		transition: color 0.3s ease;
+	}
+
+	:global(body.dark) h1 {
+		color: var(--primary-color-dark);
+	}
+
 	table {
 		width: 100%;
 		border-collapse: collapse;
 		margin-top: 20px;
+		background-color: #fff;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		transition: background-color 0.3s ease;
 	}
+
+	:global(body.dark) table {
+		background-color: #444;
+	}
+
 	th,
 	td {
 		padding: 10px;
-		border: 1px solid #ccc;
+		border: 1px solid var(--border-color-light);
 		text-align: left;
 		vertical-align: middle;
+		color: var(--text-color-light);
+		transition:
+			border-color 0.3s ease,
+			color 0.3s ease;
 	}
+
+	:global(body.dark) th,
+	:global(body.dark) td {
+		border-color: var(--border-color-dark);
+		color: var(--text-color-dark);
+	}
+
 	th {
-		background-color: #f4f4f4;
+		background-color: var(--background-color-light);
+		font-weight: bold;
+	}
+
+	:global(body.dark) th {
+		background-color: #555;
+	}
+
+	tr:hover:not(thead tr) {
+		background-color: rgba(0, 0, 0, 0.05);
+	}
+
+	:global(body.dark) tr:hover:not(thead tr) {
+		background-color: rgba(255, 255, 255, 0.05);
 	}
 </style>
