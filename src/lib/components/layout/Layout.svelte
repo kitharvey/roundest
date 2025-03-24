@@ -21,7 +21,9 @@
 
 <div class:dark={isDarkMode}>
 	<header>
-		<h1>Roundest</h1>
+		<a href="/">
+			<h1>Roundest</h1>
+		</a>
 		<button on:click={toggleDarkMode}>
 			{isDarkMode ? 'Light Mode' : 'Dark Mode'}
 		</button>

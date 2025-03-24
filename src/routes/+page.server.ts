@@ -2,12 +2,12 @@ import type { Actions, PageServerLoad } from './$types';
 import { getMatchups } from '$lib/workers/getMatchups';
 
 export const load: PageServerLoad = async ({ locals: { db } }) => {
-	const matchups = await getMatchups(db, 1);
+	const matchups = await getMatchups(db, 3);
 	return { matchups };
 };
 
 export const actions: Actions = {
-	default: async ({ request }) => {
+	default: async ({ request, locals: { db } }) => {
 		const data = await request.formData();
 		const winnerId = data.get('winner_id');
 		const pokemon1Id = data.get('pokemon1_id');
@@ -17,5 +17,8 @@ export const actions: Actions = {
 			const loserId = winnerId === pokemon1Id ? pokemon2Id : pokemon1Id;
 			console.log({ winnerId, loserId });
 		}
+
+		const matchup = await getMatchups(db, 1);
+		return { matchup };
 	}
 };
