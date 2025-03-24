@@ -25,7 +25,7 @@
 	let optimizedDefaultUrl = $derived(
 		import.meta.env.DEV
 			? src
-			: `${baseURL}${[`width=${variantConfig.width}`, 'quality=75', 'format=webp']
+			: `${baseURL}${[`width=${variantConfig.width}`, 'quality=80', 'format=webp']
 					.filter(Boolean)
 					.join(',')}/${encodeURIComponent(src)}`
 	);
@@ -35,7 +35,7 @@
 			? ''
 			: [100, 200]
 					.map((width) => {
-						const params = [`width=${width}`, `height=${width}`, 'quality=75', 'format=webp']
+						const params = [`width=${width}`, `height=${width}`, 'quality=80', 'format=webp']
 							.filter(Boolean)
 							.join(',');
 						return `${baseURL}${params}/${encodeURIComponent(src)} ${width}w`;
@@ -70,5 +70,6 @@
 		height: 200px;
 		object-fit: contain;
 		margin-bottom: 10px;
+		image-rendering: pixelated;
 	}
 </style>

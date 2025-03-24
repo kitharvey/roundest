@@ -1,4 +1,5 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
+import { pokemon as pokemonSchema } from '$lib/server/db/schema';
 
 interface Pokemon {
 	id: number;
@@ -43,18 +44,10 @@ async function fetchWithRetry(url: string, retries = 3, timeoutMs = 15000): Prom
 	throw new Error('Max retries reached');
 }
 
-export const GET: RequestHandler = async ({ platform }) => {
+export const GET: RequestHandler = async ({ locals }) => {
 	const logs: string[] = []; // Array to collect logs
 
 	try {
-		// Validate KV namespace
-		if (!platform?.env?.pokemon) {
-			logs.push('[KV Error] KV namespace not found');
-			console.error('[KV Error] KV namespace not found');
-			return json({ error: 'KV namespace not found', logs }, { status: 500 });
-		}
-
-		const kv = platform.env.pokemon;
 		logs.push('[Process Start] Syncing Generation 1 Pokémon...');
 		console.log('[Process Start] Syncing Generation 1 Pokémon...');
 
@@ -92,7 +85,21 @@ export const GET: RequestHandler = async ({ platform }) => {
 					);
 				}
 				const pokemonData: Pokemon = { id: details.id, name: pokemon.name, image };
-				await kv.put(`pokemon:${details.id}`, JSON.stringify(pokemonData));
+				await locals.db
+					.insert(pokemonSchema)
+					.values({
+						name: pokemonData.name,
+						image: pokemonData.image,
+						id: pokemonData.id
+					})
+					.onConflictDoUpdate({
+						target: pokemonSchema.id,
+						set: {
+							name: pokemonData.name,
+							image: pokemonData.image,
+							id: pokemonData.id
+						}
+					});
 				logs.push(`[KV Save] Saved ${pokemon.name} (ID: ${details.id})`);
 				console.log(`[KV Save] Saved ${pokemon.name} (ID: ${details.id})`);
 				savedCount++;
@@ -103,10 +110,6 @@ export const GET: RequestHandler = async ({ platform }) => {
 		}
 
 		// Step 3: Update total count
-		await kv.put('total_pokemon', `${savedCount}`);
-		logs.push(`[Total Update] Set total_pokemon to ${savedCount}.`);
-		console.log(`[Total Update] Set total_pokemon to ${savedCount}.`);
-
 		return json({
 			message: 'Generation 1 Pokémon processed successfully',
 			saved: savedCount,

@@ -15,7 +15,9 @@
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run",
 		"deploy": "pnpm run build && wrangler pages deploy",
-		"cf-typegen": "wrangler types && move worker-configuration.d.ts src/"
+		"cf-typegen": "wrangler types && move worker-configuration.d.ts src/",
+		"db:migrate:local": "drizzle-kit migrate",
+		"db:migrate:prod": "wrangler d1 migrations apply DB --remote"
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "^4.20250320.0",
@@ -26,6 +28,8 @@
 		"@sveltejs/vite-plugin-svelte": "^5.0.0",
 		"@testing-library/jest-dom": "^6.6.3",
 		"@testing-library/svelte": "^5.2.4",
+		"@types/node": "^22.13.11",
+		"drizzle-kit": "^0.30.5",
 		"eslint": "^9.18.0",
 		"eslint-config-prettier": "^10.0.1",
 		"eslint-plugin-svelte": "^3.0.0",
@@ -45,5 +49,9 @@
 		"onlyBuiltDependencies": [
 			"esbuild"
 		]
+	},
+	"dependencies": {
+		"dotenv": "^16.4.7",
+		"drizzle-orm": "^0.41.0"
 	}
 }

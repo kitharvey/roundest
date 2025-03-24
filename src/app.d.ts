@@ -1,4 +1,7 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
+
+import type { DrizzleD1Database } from 'drizzle-orm/d1';
+
 // for information about these interfaces
 declare global {
 	namespace App {
@@ -12,7 +15,7 @@ declare global {
 		}
 		interface Locals {
 			matchups: Matchup[] | null;
-			fetchMatchups: () => Promise<Matchup[]>;
+			db: DrizzleD1Database;
 		}
 	}
 }

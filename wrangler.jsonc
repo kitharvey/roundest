@@ -11,14 +11,12 @@
 		"enabled": true
 	},
 	"compatibility_flags": ["nodejs_compat"],
-
-	"kv_namespaces": [
+	"d1_databases": [
 		{
-			"binding": "pokemon",
-			"id": "fd84c2a8052b425f8678ca3bd4e0ec1a"
-
-			// preview id
-			// "id": "046a5e986e264a839746339bc796a342"
+			"binding": "DB",
+			"database_name": "roundest",
+			"database_id": "cbd68df2-5990-4c9c-94bb-161e0c2d7b36",
+			"migrations_dir": "./drizzle"
 		}
 	],
 	"vars": {

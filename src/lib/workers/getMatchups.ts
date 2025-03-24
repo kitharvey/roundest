@@ -1,46 +1,35 @@
 // src/lib/workers/getMatchups.ts
-import type { Matchup, Pokemon } from '../../app';
-import type { KVNamespace } from '@cloudflare/workers-types';
+import type { DrizzleD1Database } from 'drizzle-orm/d1';
+import type { Matchup } from '../../app';
+import { pokemon as pokemonSchema } from '$lib/server/db/schema';
+import { count, sql } from 'drizzle-orm';
 
-export async function getMatchups(kv: KVNamespace, count = 1): Promise<Matchup[]> {
-	const totalStr = await kv.get('total_pokemon');
-	const total = totalStr ? parseInt(totalStr, 10) : 0;
-	if (total <= 1) {
-		console.error('Invalid total_pokemon value:', total);
-		return []; // Early return to avoid infinite loop or errors
+export async function getMatchups(db: DrizzleD1Database, matchupCount = 1): Promise<Matchup[]> {
+	// Step 1: Get total count of Pokémon
+	const totalResult = await db.select({ count: count() }).from(pokemonSchema);
+	const total = totalResult[0]?.count || 0;
+	if (total < 2) {
+		console.error('Not enough Pokémon in database to create a matchup:', total);
+		return [];
 	}
 
 	const matchups: Matchup[] = [];
-	const attemptsPerMatchup = 5; // Limit retries to avoid excessive CPU
 
-	for (let i = 0; i < count; i++) {
-		let attempts = 0;
-		let pokemon1: Pokemon | null = null;
-		let pokemon2: Pokemon | null = null;
+	// Step 2: Fetch matchups in a single query per matchup
+	for (let i = 0; i < matchupCount; i++) {
+		const randomPokemon = await db
+			.select()
+			.from(pokemonSchema)
+			.orderBy(sql`RANDOM()`)
+			.limit(2); // Fetch exactly 2 random Pokémon
 
-		while (attempts < attemptsPerMatchup) {
-			const id1 = Math.floor(Math.random() * total) + 1;
-			const id2 = Math.floor(Math.random() * total) + 1;
-			if (id2 === id1) continue; // Skip if IDs match
-
-			const [pokemon1Str, pokemon2Str] = await Promise.all([
-				kv.get(`pokemon:${id1}`),
-				kv.get(`pokemon:${id2}`)
-			]);
-
-			if (pokemon1Str && pokemon2Str) {
-				pokemon1 = JSON.parse(pokemon1Str) as Pokemon;
-				pokemon2 = JSON.parse(pokemon2Str) as Pokemon;
-				break;
-			}
-			attempts++;
+		if (randomPokemon.length < 2) {
+			console.error('Failed to fetch enough Pokémon for matchup:', randomPokemon);
+			continue;
 		}
 
-		if (pokemon1 && pokemon2) {
-			matchups.push({ pokemon1, pokemon2 });
-		} else {
-			console.error(`Failed to fetch valid Pokémon pair after ${attemptsPerMatchup} attempts`);
-		}
+		const [pokemon1, pokemon2] = randomPokemon;
+		matchups.push({ pokemon1, pokemon2 });
 	}
 
 	return matchups;
