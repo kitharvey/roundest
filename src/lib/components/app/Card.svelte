@@ -24,7 +24,7 @@
 		margin: 16px;
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 		background-color: #fff;
-		width: 200px;
+		width: max-content;
 		transition:
 			border-color 0.3s ease,
 			box-shadow 0.3s ease,

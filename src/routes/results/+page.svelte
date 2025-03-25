@@ -23,7 +23,7 @@
 			<tr>
 				<td>{index + 1}</td>
 				<td>
-					<Image src={pokemon.image} alt={pokemon.name} variant="thumb" />
+					<Image src={pokemon.image} alt={pokemon.name} variant="thumbnail" />
 				</td>
 				<td>{pokemon.name}</td>
 				<td>{pokemon.winCount}</td>
@@ -36,14 +36,8 @@
 
 <style>
 	h1 {
-		color: var(--primary-color-light);
 		text-align: center;
 		margin-bottom: 20px;
-		transition: color 0.3s ease;
-	}
-
-	:global(body.dark) h1 {
-		color: var(--primary-color-dark);
 	}
 
 	table {
@@ -52,7 +46,6 @@
 		margin-top: 20px;
 		background-color: #fff;
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-		transition: background-color 0.3s ease;
 	}
 
 	:global(body.dark) table {
@@ -66,9 +59,6 @@
 		text-align: left;
 		vertical-align: middle;
 		color: var(--text-color-light);
-		transition:
-			border-color 0.3s ease,
-			color 0.3s ease;
 	}
 
 	:global(body.dark) th,

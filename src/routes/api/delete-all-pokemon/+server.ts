@@ -1,5 +1,5 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
-import { pokemon as pokemonSchema } from '$lib/server/db/schema';
+import { pokemon as pokemonSchema, votes as votesSchema } from '$lib/server/db/schema';
 
 export const GET: RequestHandler = async ({ locals }) => {
 	try {
@@ -7,6 +7,7 @@ export const GET: RequestHandler = async ({ locals }) => {
 			return json({ error: 'Database not found' }, { status: 500 });
 		}
 
+		await locals.db.delete(votesSchema);
 		await locals.db.delete(pokemonSchema);
 
 		return json({ message: 'All Pokémon data deleted successfully' });

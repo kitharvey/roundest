@@ -70,9 +70,11 @@
 
 	.limit-input {
 		padding: 0.5rem;
-		border: 1px solid #ccc;
+		border: 1px solid var(--color-border, #ccc);
 		border-radius: 4px;
 		font-size: 1rem;
+		background-color: var(--color-bg-input, #fff);
+		color: var(--color-text, #000);
 	}
 
 	.add-button {
@@ -98,9 +100,10 @@
 	.logs {
 		margin-top: 1rem;
 		padding: 1rem;
-		border: 1px solid #ccc;
+		border: 1px solid var(--color-border, #ccc);
 		border-radius: 4px;
-		background-color: #f9f9f9;
+		background-color: var(--color-bg-secondary, #f9f9f9);
+		color: var(--color-text, #000);
 		max-height: 300px;
 		overflow-y: auto;
 	}
@@ -109,5 +112,6 @@
 		font-family: monospace;
 		padding: 0.25rem 0;
 		font-size: 0.9rem;
+		color: var(--color-text, #000);
 	}
 </style>
