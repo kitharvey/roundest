@@ -23,7 +23,7 @@
 			<tr>
 				<td>{index + 1}</td>
 				<td>
-					<Image src={pokemon.image} alt={pokemon.name} variant="thumbnail" />
+					<Image src={pokemon.image} alt={pokemon.name} variant="thumb" />
 				</td>
 				<td>{pokemon.name}</td>
 				<td>{pokemon.winCount}</td>

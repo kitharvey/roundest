@@ -9,11 +9,7 @@ interface PokemonResponse {
 interface PokemonDetails {
 	id: number;
 	sprites: {
-		other?: {
-			'official-artwork'?: {
-				front_default?: string;
-			};
-		};
+		front_default?: string;
 	};
 }
 
@@ -76,7 +72,7 @@ export async function getMorePokemons(
 			try {
 				const response = await fetchWithRetry(pokemon.url);
 				const details: PokemonDetails = await response.json();
-				const image = details.sprites.other?.['official-artwork']?.front_default;
+				const image = details.sprites.front_default;
 				if (image) {
 					await db
 						.insert(pokemonSchema)

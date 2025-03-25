@@ -6,7 +6,7 @@
 </script>
 
 <div class="card">
-	<Image src={pokemon.image} alt={pokemon.name} />
+	<Image src={pokemon.image} alt={pokemon.name} variant="card" />
 	<div class="info">
 		<h2>{pokemon.name}</h2>
 		<p>#{pokemon.id}</p>
@@ -25,10 +25,6 @@
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 		background-color: #fff;
 		width: max-content;
-		transition:
-			border-color 0.3s ease,
-			box-shadow 0.3s ease,
-			background-color 0.3s ease;
 	}
 
 	:global(body.dark) .card {

@@ -128,13 +128,6 @@
 		border: none;
 		padding: 0;
 		cursor: pointer;
-		transition:
-			transform 0.2s ease-in-out,
-			opacity 0.3s ease;
-	}
-
-	button:hover:not(:disabled) {
-		transform: scale(1.05);
 	}
 
 	button:disabled {
