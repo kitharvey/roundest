@@ -19,7 +19,6 @@ export const actions: Actions = {
 		}
 
 		const loserId = winnerId === pokemon1Id ? pokemon2Id : pokemon1Id;
-		console.log({ winnerId, loserId });
 
 		try {
 			await db.insert(votes).values({ pokemonId: winnerId, voteType: 'win' });

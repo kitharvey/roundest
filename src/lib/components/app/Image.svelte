@@ -33,16 +33,16 @@
 	}
 
 	.card {
-		width: 150px;
-		height: 150px;
+		width: 200px;
+		height: 200px;
 		image-rendering: crisp-edges;
 		image-rendering: -moz-crisp-edges;
 		image-rendering: pixelated;
 	}
 
 	.thumb {
-		width: 50px;
-		height: 50px;
+		width: 100px;
+		height: 100px;
 	}
 
 	:global(body.dark) .card {

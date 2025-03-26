@@ -1,14 +1,25 @@
 :root {
-	--background-color-light: #f5f5f5;
-	--text-color-light: #333;
-	--primary-color-light: #4caf50;
-	--secondary-color-light: #2196f3;
-	--border-color-light: #ddd;
-	--background-color-dark: #333;
-	--text-color-dark: #f5f5f5;
-	--primary-color-dark: #6fbf73;
-	--secondary-color-dark: #42a5f5;
-	--border-color-dark: #555;
+	/* Light mode variables */
+	--background-color-light: #e0f7fa; /* Light cyan, reminiscent of a clear sky in Pokémon regions */
+	--text-color-light: #333333; /* Dark gray for readability */
+	--primary-color-light: #c62828; /* Darker Poké Ball red for better contrast */
+	--secondary-color-light: #6b5415; /* Deeper Pikachu yellow for better contrast */
+	--border-color-light: #b0bec5; /* Light gray-blue for borders, like a steel-type Pokémon */
+	--button-background-light: #4caf50; /* Grass-type green for buttons */
+	--button-text-light: #1a3c34; /* Dark teal for better contrast on green buttons */
+
+	/* Dark mode variables */
+	--background-color-dark: #263238; /* Dark blue-gray, like a nighttime Pokémon journey */
+	--text-color-dark: #ffffff; /* White text for contrast */
+	--primary-color-dark: #f06292; /* Lighter Poké Ball red for better contrast */
+	--secondary-color-dark: #ffee58; /* Brighter Pikachu yellow for dark mode */
+	--border-color-dark: #546e7a; /* Darker gray-blue for borders */
+	--button-background-dark: #66bb6a; /* Slightly lighter grass green for dark mode */
+	--button-text-dark: #1a3c34; /* Dark teal for better contrast on green buttons */
+
+	/* Shared variables */
+	--accent-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Shadow for a 3D effect, like Pokémon cards */
+	--pokeball-border: 2px solid #212121; /* Black border for Poké Ball-inspired elements */
 }
 
 *,
@@ -20,7 +31,10 @@
 }
 
 body {
-	font-family: sans-serif;
+	/* Updated font to a pixel style with fallbacks */
+	font-family: 'Press Start 2P', monospace, 'Arial', sans-serif; /* Pixel font with fallbacks */
+	font-size: 14px; /* Base font size adjusted for pixel font readability */
+	line-height: 1.5; /* Increased line height for better readability with pixel font */
 	margin: 0;
 	padding: 0;
 	background-color: var(--background-color-light);

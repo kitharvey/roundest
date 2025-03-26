@@ -9,7 +9,6 @@
 	<Image src={pokemon.image} alt={pokemon.name} variant="card" />
 	<div class="info">
 		<h2>{pokemon.name}</h2>
-		<p>#{pokemon.id}</p>
 	</div>
 </div>
 
@@ -18,41 +17,36 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		border: 1px solid var(--border-color-light);
-		border-radius: 8px;
-		padding: 16px;
-		margin: 16px;
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-		background-color: #fff;
+		border: 4px solid var(--primary-color-light);
+		padding: 20px;
+		margin: 20px;
+		background: var(--background-color-light);
+		box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
 		width: max-content;
+		font-family: 'Press Start 2P', monospace;
 	}
 
-	:global(body.dark) .card {
-		border-color: var(--border-color-dark);
-		background-color: #444;
-		box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
-	}
-
+	/* Info section */
 	.info {
 		text-align: center;
+		margin-top: 10px; /* More spacing between image and text */
 	}
 
 	.info h2 {
 		margin: 0;
-		font-size: 1.2em;
-		margin-bottom: 5px;
+		font-size: 1.1em; /* Slightly smaller for pixel font readability */
+		color: var(--primary-color-light); /* Poké Ball red for the name */
+		text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2); /* Pixelated text shadow */
 	}
 
-	.info p {
-		margin: 0;
-		font-size: 0.9em;
-		color: #666;
+	/* Dark Mode Styles */
+	:global(body.dark) .card {
+		border-color: var(--primary-color-dark);
+		background: var(--background-color-dark);
+		box-shadow: 4px 4px 0 rgba(255, 255, 255, 0.2);
 	}
 
-	:global(body.dark) .info p {
-		color: #ccc;
-	}
 	:global(body.dark) .info h2 {
-		color: #ccc;
+		color: var(--primary-color-dark); /* Poké Ball red in dark mode */
 	}
 </style>

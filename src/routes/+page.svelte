@@ -62,10 +62,6 @@
 			</div>
 		{/each}
 	</div>
-
-	<footer>
-		<p class="footer-text">Keep voting to see more matchups!</p>
-	</footer>
 </div>
 
 <style>
@@ -78,25 +74,23 @@
 	header {
 		text-align: center;
 		margin-bottom: 2rem;
+		padding: 1rem;
 	}
 
 	h1 {
-		font-size: 3rem;
-		margin-bottom: 0.5rem;
+		font-size: 2rem; /* Adjusted for pixel font readability */
+		text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3); /* Pixelated shadow */
 	}
 
 	.subtitle {
-		font-size: 1.2rem;
-		opacity: 0.8;
+		font-size: 0.9rem; /* Smaller for pixel font */
+		color: var(--secondary-color-light); /* Pikachu yellow */
 	}
 
 	.instructions {
 		text-align: center;
 		margin-bottom: 2rem;
 		padding: 1rem;
-		background: rgba(255, 255, 255, 0.1);
-		border-radius: 8px;
-		color: var(--text-color);
 	}
 
 	.matchups {
@@ -109,18 +103,14 @@
 	.matchup-buttons {
 		display: flex;
 		align-items: center;
-		gap: 20px;
+		gap: 30px; /* Increased gap for better spacing */
 	}
 
 	.vs {
-		font-size: 1.5em;
+		font-size: 1.2rem; /* Adjusted for pixel font */
 		font-weight: bold;
-		color: var(--text-color);
-		text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-	}
-
-	:global(body.dark) .vs {
-		text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.1);
+		color: var(--primary-color-light); /* Poké Ball red */
+		text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
 	}
 
 	button {
@@ -128,6 +118,12 @@
 		border: none;
 		padding: 0;
 		cursor: pointer;
+		/* Add a pixelated hover effect */
+		transition: transform 0.2s ease;
+	}
+
+	button:hover:not(:disabled) {
+		transform: scale(1.05); /* Slight scale on hover */
 	}
 
 	button:disabled {
@@ -139,20 +135,30 @@
 		display: none;
 	}
 
-	footer {
-		text-align: center;
-		margin-top: 2rem;
-		opacity: 0.8;
-		color: var(--text-color);
+	:global(body.dark) .subtitle {
+		color: var(--secondary-color-dark);
+	}
+	:global(body.dark) .vs {
+		color: var(--primary-color-dark);
+		text-shadow: 2px 2px 0 rgba(255, 255, 255, 0.2);
 	}
 
+	/* Responsive Adjustments */
 	@media (max-width: 768px) {
 		h1 {
-			font-size: 2rem;
+			font-size: 1.5rem; /* Adjusted for pixel font */
 		}
 
 		.instructions {
-			font-size: 0.9rem;
+			font-size: 0.8rem;
+		}
+
+		.matchup-buttons {
+			gap: 15px; /* Reduced gap for smaller screens */
+		}
+
+		.vs {
+			font-size: 1rem;
 		}
 	}
 </style>
