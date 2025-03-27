@@ -49,4 +49,10 @@
 	:global(body.dark) .info h2 {
 		color: var(--primary-color-dark); /* Poké Ball red in dark mode */
 	}
+
+	@media (max-width: 768px) {
+		.card {
+			margin: 0;
+		}
+	}
 </style>

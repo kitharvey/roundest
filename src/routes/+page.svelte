@@ -97,6 +97,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		flex-wrap: wrap;
 		margin-bottom: 20px;
 	}
 
@@ -118,12 +119,6 @@
 		border: none;
 		padding: 0;
 		cursor: pointer;
-		/* Add a pixelated hover effect */
-		transition: transform 0.2s ease;
-	}
-
-	button:hover:not(:disabled) {
-		transform: scale(1.05); /* Slight scale on hover */
 	}
 
 	button:disabled {
@@ -150,15 +145,22 @@
 		}
 
 		.instructions {
-			font-size: 0.8rem;
+			display: none;
 		}
 
 		.matchup-buttons {
 			gap: 15px; /* Reduced gap for smaller screens */
+			flex-direction: column;
 		}
 
 		.vs {
 			font-size: 1rem;
+		}
+		.page {
+			padding: 0;
+		}
+		.subtitle {
+			display: none;
 		}
 	}
 </style>

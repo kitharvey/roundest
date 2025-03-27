@@ -46,8 +46,6 @@
 		max-width: 800px;
 		margin: 0 auto;
 		padding: 2rem;
-		/* Ensure pixelated rendering for the entire container */
-		image-rendering: pixelated;
 	}
 
 	h1 {
@@ -117,11 +115,8 @@
 		justify-content: center;
 		/* Pixelated shadow */
 		box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
-	}
-
-	:global(.image-container img) {
-		/* Ensure the image renders pixelated */
-		image-rendering: pixelated;
+		width: max-content;
+		height: max-content;
 	}
 
 	.details {
@@ -129,6 +124,7 @@
 	}
 
 	.details h2 {
+		font-size: 1rem;
 		font-size: 1.1rem; /* Adjusted for pixel font */
 		color: var(--primary-color-light); /* Poké Ball red */
 		text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3); /* Pixelated shadow */
@@ -146,12 +142,12 @@
 	}
 
 	.stat .label {
-		font-size: 0.8rem; /* Adjusted for pixel font */
+		font-size: 0.7rem; /* Adjusted for pixel font */
 		color: var(--text-color-light);
 	}
 
 	.stat .value {
-		font-size: 0.8rem;
+		font-size: 0.7rem;
 		color: var(--button-background-light); /* Grass green for values */
 	}
 
@@ -187,28 +183,46 @@
 
 	/* Responsive Adjustments */
 	@media (max-width: 768px) {
+		.rankings-container {
+			padding: 0;
+		}
+
 		.pokemon-info {
 			flex-direction: column;
 			align-items: flex-start;
 		}
 
-		.image-container {
-			width: 60px;
-			height: 60px;
-		}
-
 		.stats {
 			flex-direction: column;
-			gap: 0.5rem;
+			gap: 0.2rem;
 		}
 
 		.rank-badge {
-			width: 50px;
-			height: 50px;
+			width: 40px;
+			height: 40px;
+			margin: 0;
+			position: absolute;
+			top: 10px;
+			left: 10px;
 		}
 
 		.rank-badge span {
-			font-size: 0.9rem;
+			font-size: 0.8rem;
+		}
+
+		.pokedex-entry {
+			padding: 0.5rem;
+			gap: 0.5rem;
+			align-items: flex-start;
+			position: relative;
+		}
+
+		.details h2 {
+			flex-direction: column;
+		}
+
+		.image-container {
+			margin: 0 auto;
 		}
 	}
 </style>

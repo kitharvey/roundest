@@ -20,56 +20,74 @@
 </script>
 
 <header>
-	<nav>
-		<a href="/">
-			<h1>Roundest</h1>
-		</a>
-		<a href="/results">Results</a>
-	</nav>
-	<button onclick={toggleDarkMode}>
-		{isDarkMode ? 'Light Mode' : 'Dark Mode'}
-	</button>
+	<div class="header-content">
+		<nav>
+			<a href="/">
+				<h1>Roundest</h1>
+			</a>
+
+			<a href="/results">Results</a>
+		</nav>
+	</div>
+	<div class="theme-button">
+		<button onclick={toggleDarkMode}>{isDarkMode ? 'Light Mode' : 'Dark Mode'}</button>
+	</div>
 </header>
 <main>
 	{@render children()}
 </main>
 
 <style>
+	.header-content {
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 20px;
+		flex-wrap: wrap;
+		width: 100%;
+	}
+
 	/* Header and Navigation */
 	header {
+		position: sticky;
+		top: 0;
 		display: flex;
 		align-items: center;
-		justify-content: space-between; /* Better spacing for header elements */
-		padding: 15px 30px; /* Increased padding for a more spacious feel */
+		justify-content: space-between;
+		flex-wrap: wrap;
+		padding: 15px 30px;
 		gap: 20px;
 		background: var(--primary-color-light); /* Poké Ball red-to-white gradient */
 		color: var(--text-color-dark); /* White text for contrast on gradient */
 		box-shadow: var(--accent-shadow); /* Pokémon card-like shadow */
 		transition: background 0.3s ease;
+		z-index: 1000;
 	}
 
 	nav {
+		flex-grow: 1;
 		display: flex;
 		align-items: flex-end;
+		justify-content: space-between;
 		gap: 30px; /* More spacing between nav items */
 	}
 
 	nav h1 {
 		flex-shrink: 0;
-		font-size: 1.5rem; /* Slightly larger for prominence */
+		font-size: 1.3rem; /* Slightly larger for prominence */
 		text-shadow: var(--accent-shadow); /* Shadow for a 3D effect */
 		line-height: 1;
 	}
 
-	nav a {
+	a {
 		text-decoration: none;
 		color: inherit;
 		font-weight: 500; /* Slightly bolder for emphasis */
-		line-height: 1;
+		line-height: 1.2;
 		transition: color 0.3s ease;
 	}
 
-	nav a:hover {
+	a:hover {
 		color: var(--secondary-color-dark); /* Pikachu yellow on hover in light mode */
 	}
 
@@ -107,7 +125,16 @@
 		box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Reduced shadow on click */
 	}
 
+	.theme-button {
+		position: fixed;
+		top: 60px;
+		right: 10px;
+		z-index: 100;
+		display: flex;
+	}
+
 	/* Dark Mode Styles */
+
 	:global(body.dark) header {
 		background: var(--primary-color-dark); /* Red-to-gray gradient for dark mode */
 	}
@@ -123,5 +150,24 @@
 	:global(body.dark) button {
 		background-color: var(--button-background-dark); /* Lighter grass green in dark mode */
 		color: var(--button-text-dark);
+	}
+
+	/* Responsive Adjustments */
+	@media (max-width: 768px) {
+		header {
+			padding: 10px 20px;
+		}
+
+		.header-content {
+			gap: 10px;
+		}
+
+		nav {
+			gap: 10px;
+		}
+
+		.theme-button {
+			top: 50px;
+		}
 	}
 </style>
