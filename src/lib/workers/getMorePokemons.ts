@@ -1,9 +1,20 @@
 import { pokemon as pokemonSchema } from '$lib/server/db/schema';
 import type { DrizzleD1Database } from 'drizzle-orm/d1';
+import { getImage } from './getImage';
 
 interface PokemonResponse {
 	name: string;
 	url: string;
+}
+
+interface PokemonType {
+	name: string;
+	url: string;
+}
+
+interface PokemonTypes {
+	slot: number;
+	type: PokemonType;
 }
 
 interface PokemonDetails {
@@ -11,6 +22,7 @@ interface PokemonDetails {
 	sprites: {
 		front_default?: string;
 	};
+	types: PokemonTypes[];
 }
 
 async function fetchWithRetry(url: string, retries = 3, timeoutMs = 5000): Promise<Response> {
@@ -72,30 +84,46 @@ export async function getMorePokemons(
 			try {
 				const response = await fetchWithRetry(pokemon.url);
 				const details: PokemonDetails = await response.json();
-				const image = details.sprites.front_default;
+
+				// You might need to import PokemonType from your schema file here too
+				// import { PokemonType } from '$lib/server/db/schema';
+
+				const image = getImage(details.id);
 				if (image) {
-					await db
+					// REMOVE the db.transaction wrapper
+					// await db.transaction(async (tx) => { // REMOVE THIS LINE
+
+					// Execute directly on 'db' instead of 'tx'
+					await db // Use 'db' here
 						.insert(pokemonSchema)
 						.values({
 							name: pokemon.name,
 							image: image,
+							// Ensure PokemonType is imported and used for assertion
+							types: details.types.map((typeInfo) => typeInfo.type.name),
 							id: details.id
 						})
 						.onConflictDoUpdate({
 							target: pokemonSchema.id,
 							set: {
 								name: pokemon.name,
+								// Ensure PokemonType is imported and used for assertion
+								types: details.types.map((typeInfo) => typeInfo.type.name),
 								image: image
 							}
 						});
+
+					// }); // REMOVE THIS LINE
+
 					logs.push(`[DB Save] Saved ${pokemon.name} (ID: ${details.id})`);
 					savedCount++;
 				}
 			} catch (error) {
 				logs.push(`[Process Error] Failed to process ${pokemon.name}: ${String(error)}`);
+				// Add more detailed logging if needed
+				console.error(`Error processing ${pokemon.name}:`, error);
 			}
 		});
-
 		await Promise.all(processPromises);
 
 		return {

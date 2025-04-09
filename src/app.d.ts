@@ -1,12 +1,40 @@
-// See https://svelte.dev/docs/kit/types#app.d.ts
-
 import type { DrizzleD1Database } from 'drizzle-orm/d1';
 
-// for information about these interfaces
 declare global {
+	type PokemonType =
+		| 'normal'
+		| 'fire'
+		| 'fighting'
+		| 'water'
+		| 'flying'
+		| 'grass'
+		| 'poison'
+		| 'electric'
+		| 'ground'
+		| 'psychic'
+		| 'rock'
+		| 'ice'
+		| 'bug'
+		| 'dragon'
+		| 'ghost'
+		| 'dark'
+		| 'steel'
+		| 'fairy';
+
+	interface Pokemon {
+		id: number;
+		name: string;
+		image: string;
+		types?: PokemonType[];
+	}
+
+	interface Matchup {
+		pokemon1: Pokemon;
+		pokemon2: Pokemon;
+	}
+
 	namespace App {
 		interface Platform {
-			env: Env;
 			cf: CfProperties;
 			ctx: ExecutionContext;
 			env: {
@@ -14,21 +42,9 @@ declare global {
 			};
 		}
 		interface Locals {
+			// Matchup is now globally defined, no import needed
 			matchups: Matchup[] | null;
 			db: DrizzleD1Database;
 		}
 	}
 }
-
-interface Pokemon {
-	id: number;
-	name: string;
-	image: string;
-}
-
-interface Matchup {
-	pokemon1: Pokemon;
-	pokemon2: Pokemon;
-}
-
-export { Pokemon, Matchup };

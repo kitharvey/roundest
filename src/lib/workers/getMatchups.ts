@@ -1,5 +1,4 @@
 import type { DrizzleD1Database } from 'drizzle-orm/d1';
-import type { Matchup } from '../../app';
 import { pokemon as pokemonSchema } from '$lib/server/db/schema';
 import { sql } from 'drizzle-orm';
 

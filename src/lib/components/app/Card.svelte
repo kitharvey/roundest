@@ -1,58 +1,134 @@
 <script lang="ts">
-	import type { Pokemon } from '../../../app';
+	import { getBGColor } from '$lib/workers/getBGColor';
 	import Image from './Image.svelte';
+	import { getTypeIcon } from '$lib/workers/getTypeIcon';
 
 	let { pokemon }: { pokemon: Pokemon } = $props();
+
+	let formattedName = $derived(pokemon.name.replaceAll('-', ' '));
+
+	let bgColor = $derived(
+		`background: linear-gradient(0deg, rgba(255,255,255,0.6) 0%, ${
+			pokemon.types ? getBGColor(pokemon.types[0]) : 'rgba(255,255,255,0)'
+		} 80%, ${pokemon.types ? getBGColor(pokemon.types[0]) : 'rgba(255,255,255,0)'} 100%)`
+	);
+
+	let types = $derived(pokemon.types ?? []);
+
+	let formattedId = $derived(`#${pokemon.id.toString().padStart(3, '0')}`);
 </script>
 
-<div class="card">
-	<Image src={pokemon.image} alt={pokemon.name} variant="card" />
-	<div class="info">
-		<h2>{pokemon.name}</h2>
+<div class="card-container">
+	<div class="card" style={bgColor}>
+		<span class="id-number">{formattedId}</span>
+
+		<div class="image-frame">
+			<Image src={pokemon.image} alt={formattedName} variant="card" />
+		</div>
+
+		<span class="name">{formattedName}</span>
+
+		<div class="types-container">
+			{#each types as type}
+				<div class="type-icon-wrapper" title={type}>
+					<img
+						src={getTypeIcon(type)}
+						class="type-icon"
+						style:margin={types.length > 1 ? '0 -5px' : '0'}
+						alt={type}
+					/>
+				</div>
+			{/each}
+		</div>
 	</div>
 </div>
 
-<style>
+<style lang="scss">
+	.card-container {
+		width: 100%;
+		max-width: 280px;
+		aspect-ratio: 5 / 7;
+		padding: 8px;
+		background: #f0f0f0;
+		border-radius: 24px;
+		box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+		transition:
+			transform 0.3s ease,
+			box-shadow 0.3s ease;
+	}
+
 	.card {
+		height: 100%;
+		width: 100%;
+		padding: 15px;
+		border-radius: 18px;
+		position: relative;
 		display: flex;
-		flex-direction: column;
 		align-items: center;
-		border: 4px solid var(--primary-color-light);
-		padding: 20px;
-		margin: 20px;
-		background: var(--background-color-light);
-		box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
-		width: max-content;
-		font-family: 'Press Start 2P', monospace;
-	}
-
-	/* Info section */
-	.info {
+		flex-direction: column;
+		justify-content: flex-end;
+		overflow: hidden;
 		text-align: center;
-		margin-top: 10px; /* More spacing between image and text */
 	}
 
-	.info h2 {
-		margin: 0;
-		font-size: 1.1em; /* Slightly smaller for pixel font readability */
-		color: var(--primary-color-light); /* Poké Ball red for the name */
-		text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2); /* Pixelated text shadow */
+	.id-number {
+		font-size: 2rem;
+		font-weight: 700;
+		color: rgba(0, 0, 0, 0.4);
+		z-index: 1;
 	}
 
-	/* Dark Mode Styles */
-	:global(body.dark) .card {
-		border-color: var(--primary-color-dark);
-		background: var(--background-color-dark);
-		box-shadow: 4px 4px 0 rgba(255, 255, 255, 0.2);
+	.image-frame {
+		width: 85%;
+		position: relative;
+		z-index: 2;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 
-	:global(body.dark) .info h2 {
-		color: var(--primary-color-dark); /* Poké Ball red in dark mode */
-	}
+	.name {
+		font-size: 1.4rem;
+		font-weight: 700;
+		line-height: 1.1;
+		text-transform: capitalize;
+		color: #333;
+		margin-bottom: 35px;
+		z-index: 1;
+		position: relative;
 
-	@media (max-width: 768px) {
-		.card {
-			margin: 0;
+		@media screen and (min-width: 640px) {
+			font-size: 1.6rem;
 		}
+	}
+
+	.types-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		position: absolute;
+		bottom: 15px;
+		left: 0;
+		right: 0;
+		z-index: 3;
+	}
+
+	.type-icon-wrapper {
+		display: inline-flex;
+	}
+
+	.type-icon {
+		width: 32px;
+		height: 32px;
+		border-radius: 50%;
+		background-color: rgba(255, 255, 255, 0.5);
+		border: 1px solid rgba(0, 0, 0, 0.1);
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		display: block;
+	}
+
+	.card-container:hover {
+		transform: translateY(-5px);
+		box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
 	}
 </style>

@@ -16,7 +16,9 @@
 		"test": "npm run test:unit -- --run",
 		"deploy": "pnpm run build && wrangler pages deploy",
 		"cf-typegen": "wrangler types && move worker-configuration.d.ts src/",
-		"db:migrate:local": "drizzle-kit migrate",
+		"db:gen": "drizzle-kit generate",
+		"db:push": "drizzle-kit push",
+		"db:migrate:local": "wrangler d1 migrations apply DB --local",
 		"db:migrate:prod": "wrangler d1 migrations apply DB --remote"
 	},
 	"devDependencies": {
@@ -52,6 +54,7 @@
 	},
 	"dependencies": {
 		"dotenv": "^16.4.7",
-		"drizzle-orm": "^0.41.0"
+		"drizzle-orm": "^0.41.0",
+		"sass": "^1.86.3"
 	}
 }

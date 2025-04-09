@@ -37,7 +37,6 @@
 		height: 200px;
 		image-rendering: crisp-edges;
 		image-rendering: -moz-crisp-edges;
-		image-rendering: pixelated;
 	}
 
 	.thumb {
