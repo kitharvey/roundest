@@ -72,14 +72,14 @@
 	}
 
 	.id-number {
-		font-size: 2rem;
+		font-size: 2.5rem;
 		font-weight: 700;
 		color: rgba(0, 0, 0, 0.4);
 		z-index: 1;
 	}
 
 	.image-frame {
-		width: 85%;
+		width: 100%;
 		position: relative;
 		z-index: 2;
 		display: flex;
