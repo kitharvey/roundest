@@ -1,6 +1,7 @@
 import type { DrizzleD1Database } from 'drizzle-orm/d1';
 import { pokemon as pokemonSchema } from '$lib/server/db/schema';
 import { sql } from 'drizzle-orm';
+import type { Matchup } from '$lib/types';
 
 export async function getMatchups(db: DrizzleD1Database, matchupCount = 1): Promise<Matchup[]> {
 	const matchups: Matchup[] = [];

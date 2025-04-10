@@ -1,3 +1,4 @@
+import type { PokemonType } from '$lib/types';
 import { sql } from 'drizzle-orm';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
@@ -5,7 +6,7 @@ export const pokemon = sqliteTable('pokemon', {
 	id: integer('id').primaryKey(),
 	name: text('name').notNull(),
 	image: text('image').notNull(),
-	types: text('types', { mode: 'json' }).$type<string[]>().notNull()
+	types: text('types', { mode: 'json' }).$type<PokemonType[]>().notNull()
 });
 
 export const votes = sqliteTable('votes', {

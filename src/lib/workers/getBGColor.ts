@@ -1,3 +1,5 @@
+import type { PokemonType } from '$lib/types';
+
 export const getBGColor = (color: PokemonType) => {
 	const colors = {
 		normal: '#C4C4A4',

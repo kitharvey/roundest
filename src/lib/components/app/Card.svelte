@@ -2,6 +2,7 @@
 	import { getBGColor } from '$lib/workers/getBGColor';
 	import Image from './Image.svelte';
 	import { getTypeIcon } from '$lib/workers/getTypeIcon';
+	import type { Pokemon } from '$lib/types';
 
 	let { pokemon }: { pokemon: Pokemon } = $props();
 
@@ -31,11 +32,12 @@
 		<div class="types-container">
 			{#each types as type}
 				<div class="type-icon-wrapper" title={type}>
-					<img
+					<Image
 						src={getTypeIcon(type)}
 						class="type-icon"
-						style:margin={types.length > 1 ? '0 -5px' : '0'}
+						style={types.length > 1 ? 'margin: 0 -5px' : 'margin: 0'}
 						alt={type}
+						variant="icon"
 					/>
 				</div>
 			{/each}
@@ -115,16 +117,6 @@
 
 	.type-icon-wrapper {
 		display: inline-flex;
-	}
-
-	.type-icon {
-		width: 32px;
-		height: 32px;
-		border-radius: 50%;
-		background-color: rgba(255, 255, 255, 0.5);
-		border: 1px solid rgba(0, 0, 0, 0.1);
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-		display: block;
 	}
 
 	.card-container:hover {

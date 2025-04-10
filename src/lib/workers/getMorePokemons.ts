@@ -1,20 +1,21 @@
 import { pokemon as pokemonSchema } from '$lib/server/db/schema';
 import type { DrizzleD1Database } from 'drizzle-orm/d1';
 import { getImage } from './getImage';
+import type { PokemonType } from '$lib/types';
 
 interface PokemonResponse {
 	name: string;
 	url: string;
 }
 
-interface PokemonType {
+interface PokemonTypeRaw {
 	name: string;
 	url: string;
 }
 
 interface PokemonTypes {
 	slot: number;
-	type: PokemonType;
+	type: PokemonTypeRaw;
 }
 
 interface PokemonDetails {
@@ -99,16 +100,14 @@ export async function getMorePokemons(
 						.values({
 							name: pokemon.name,
 							image: image,
-							// Ensure PokemonType is imported and used for assertion
-							types: details.types.map((typeInfo) => typeInfo.type.name),
+							types: details.types.map((typeInfo) => typeInfo.type.name) as PokemonType[],
 							id: details.id
 						})
 						.onConflictDoUpdate({
 							target: pokemonSchema.id,
 							set: {
 								name: pokemon.name,
-								// Ensure PokemonType is imported and used for assertion
-								types: details.types.map((typeInfo) => typeInfo.type.name),
+								types: details.types.map((typeInfo) => typeInfo.type.name) as PokemonType[],
 								image: image
 							}
 						});
