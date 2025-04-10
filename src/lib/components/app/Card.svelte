@@ -8,11 +8,8 @@
 
 	let formattedName = $derived(pokemon.name.replaceAll('-', ' '));
 
-	let bgColor = $derived(
-		`background: linear-gradient(0deg, rgba(255,255,255,0.6) 0%, ${
-			pokemon.types ? getBGColor(pokemon.types[0]) : 'rgba(255,255,255,0)'
-		} 80%, ${pokemon.types ? getBGColor(pokemon.types[0]) : 'rgba(255,255,255,0)'} 100%)`
-	);
+	// Maintain type-based gradient, but blend with a dark overlay to fit the theme
+	let bgColor = $derived(`background-color:  ${getBGColor(pokemon.types[0])}90 `);
 
 	let types = $derived(pokemon.types ?? []);
 
@@ -47,23 +44,23 @@
 
 <style lang="scss">
 	.card-container {
-		width: 100%;
-		max-width: 280px;
+		width: 250px;
 		aspect-ratio: 5 / 7;
-		padding: 8px;
-		background: #f0f0f0;
-		border-radius: 24px;
-		box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+		padding: 4px; /* Slightly thicker padding for a "frame" effect */
+		border: 2px solid var(--border-color); /* Darker gray border (#4a4e57) */
+		border-radius: 16px; /* Slightly smaller radius for a more "ancient" look */
+		box-shadow: var(--card-shadow); /* Theme shadow (0 8px 30px rgba(0, 0, 0, 0.3)) */
 		transition:
 			transform 0.3s ease,
 			box-shadow 0.3s ease;
+		position: relative;
 	}
 
 	.card {
 		height: 100%;
 		width: 100%;
 		padding: 15px;
-		border-radius: 18px;
+		border-radius: 12px; /* Adjusted to fit within container */
 		position: relative;
 		display: flex;
 		align-items: center;
@@ -71,19 +68,23 @@
 		justify-content: flex-end;
 		overflow: hidden;
 		text-align: center;
+		z-index: 2; /* Ensure content is above the texture */
 	}
 
 	.id-number {
 		font-size: 2.5rem;
 		font-weight: 700;
-		color: rgba(0, 0, 0, 0.4);
-		z-index: 1;
+		color: var(--text-primary); /* Soft gray (#b0b3b8) for a subtle effect */
+		z-index: 3;
+		line-height: 1.2;
+		font-family: var(--font-fam);
+		text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Add depth */
 	}
 
 	.image-frame {
 		width: 100%;
 		position: relative;
-		z-index: 2;
+		z-index: 3;
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -94,11 +95,12 @@
 		font-weight: 700;
 		line-height: 1.1;
 		text-transform: capitalize;
-		color: #333;
+		color: var(--text-primary); /* White (#ffffff) */
 		margin-bottom: 35px;
-		z-index: 1;
+		z-index: 3;
 		position: relative;
-
+		font-family: var(--font-fam);
+		text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Add depth */
 		@media screen and (min-width: 640px) {
 			font-size: 1.6rem;
 		}
@@ -117,10 +119,8 @@
 
 	.type-icon-wrapper {
 		display: inline-flex;
-	}
-
-	.card-container:hover {
-		transform: translateY(-5px);
-		box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+		/* Add a subtle background to make icons pop */
+		border-radius: 50%;
+		padding: 4px;
 	}
 </style>

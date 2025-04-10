@@ -1,166 +1,143 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import Card from '$lib/components/app/Card.svelte';
-	import type { SubmitFunction } from '@sveltejs/kit';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
 	let { matchups } = $derived(data);
 
-	const voteEnhance: SubmitFunction = () => {
-		return async ({ result }) => {
-			if (result.type === 'success') {
-				const matchup = result?.data?.matchup;
-				matchups.shift();
-				matchups = [...matchups, ...matchup];
-			}
-		};
-	};
+	let allPokemon = $derived(matchups.flatMap((matchup) => [matchup.pokemon1, matchup.pokemon2]));
 </script>
 
 <div class="page">
-	<header>
+	<div class="hero-content">
 		<h1>Who's Rounder?</h1>
 		<p class="subtitle">Vote for the roundest Pokémon!</p>
-	</header>
-
-	<section class="instructions">
-		<p>
-			Click on the Pokémon you think is rounder. Your votes help determine the ultimate round
-			champion!
-		</p>
-	</section>
-
-	<div class="matchups">
-		{#each matchups as matchup, index}
-			<div class="matchup" class:hidden={index !== 0}>
-				<form method="POST" use:enhance={voteEnhance}>
-					<input type="hidden" name="pokemon1_id" value={matchup.pokemon1.id} />
-					<input type="hidden" name="pokemon2_id" value={matchup.pokemon2.id} />
-					<div class="matchup-buttons">
-						<button
-							type="submit"
-							name="winner_id"
-							value={matchup.pokemon1.id}
-							disabled={index !== 0}
-							aria-label={`Vote for ${matchup.pokemon1.name}`}
-						>
-							<Card pokemon={matchup.pokemon1} />
-						</button>
-						<div class="vs">VS</div>
-						<button
-							type="submit"
-							name="winner_id"
-							value={matchup.pokemon2.id}
-							disabled={index !== 0}
-							aria-label={`Vote for ${matchup.pokemon2.name}`}
-						>
-							<Card pokemon={matchup.pokemon2} />
-						</button>
-					</div>
-				</form>
-			</div>
-		{/each}
+		<a href="/vote" class="start-button">Start Voting</a>
+	</div>
+	<div class="card-background">
+		<div class="card-scroller">
+			<!-- Duplicate the cards to create a seamless loop -->
+			{#each allPokemon as pokemon}
+				{#if pokemon}
+					<Card {pokemon} />
+				{/if}
+			{/each}
+			{#each allPokemon as pokemon}
+				{#if pokemon}
+					<Card {pokemon} />
+				{/if}
+			{/each}
+		</div>
 	</div>
 </div>
 
 <style>
 	.page {
-		padding: 2rem;
-		max-width: 1200px;
-		margin: 0 auto;
-	}
-
-	header {
-		text-align: center;
-		margin-bottom: 2rem;
-		padding: 1rem;
-	}
-
-	h1 {
-		font-size: 2rem; /* Adjusted for pixel font readability */
-		text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3); /* Pixelated shadow */
-	}
-
-	.subtitle {
-		font-size: 0.9rem; /* Smaller for pixel font */
-		color: var(--secondary-color-light); /* Pikachu yellow */
-	}
-
-	.instructions {
-		text-align: center;
-		margin-bottom: 2rem;
-		padding: 1rem;
-	}
-
-	.matchups {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		flex-wrap: wrap;
-		margin-bottom: 20px;
-	}
-
-	.matchup-buttons {
+		position: relative;
 		display: flex;
 		align-items: center;
-		gap: 30px; /* Increased gap for better spacing */
+		justify-content: flex-start;
+		height: 100dvh;
+		padding: 3rem 5rem;
+		background: linear-gradient(135deg, var(--background-start), var(--background-end));
+		overflow: hidden; /* Prevent scrolling */
 	}
 
-	.vs {
-		font-size: 1.2rem; /* Adjusted for pixel font */
-		font-weight: bold;
-		color: var(--primary-color-light); /* Poké Ball red */
-		text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+	.hero-content {
+		position: relative;
+		z-index: 2;
+		max-width: 50%;
 	}
 
-	button {
-		background: none;
+	.hero-content h1 {
+		font-size: 4rem;
+		line-height: 1.1;
+		color: var(--text-primary);
+		margin-bottom: 1rem;
+	}
+
+	.hero-content .subtitle {
+		font-size: 1.2rem;
+		color: var(--text-secondary);
+		margin-bottom: 2rem;
+	}
+
+	.start-button {
+		display: inline-block; /* Ensure <a> behaves like a button */
+		background-color: var(--button-background);
+		color: var(--button-text);
 		border: none;
-		padding: 0;
+		padding: 0.75rem 1.5rem;
+		font-size: 1rem;
+		font-weight: 700;
+		border-radius: 4px;
+		font-family: inherit;
+		text-decoration: none; /* Remove underline from <a> */
 		cursor: pointer;
+		transition: background-color 0.3s ease;
 	}
 
-	button:disabled {
-		cursor: not-allowed;
-		opacity: 0.7;
+	.start-button:hover {
+		background-color: #a52a2a; /* Lighter red for hover */
 	}
 
-	.hidden {
-		display: none;
+	/* Background Cards */
+	.card-background {
+		position: absolute;
+		top: -10%;
+		right: 0;
+		width: 50%;
+		height: 120dvh;
+		z-index: 1;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-content: flex-start; /* Start from the top for scrolling */
+		transform: rotate(15deg); /* Tilt the entire container 5 degrees to the right */
+		overflow: hidden; /* Prevent overflow from container */
 	}
 
-	:global(body.dark) .subtitle {
-		color: var(--secondary-color-dark);
+	.card-scroller {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+		justify-content: center;
+		width: 100%;
+		animation: scroll 60s linear infinite; /* Infinite scroll animation */
 	}
-	:global(body.dark) .vs {
-		color: var(--primary-color-dark);
-		text-shadow: 2px 2px 0 rgba(255, 255, 255, 0.2);
+
+	/* Keyframes for infinite scrolling */
+	@keyframes scroll {
+		0% {
+			transform: translateY(0);
+		}
+		100% {
+			transform: translateY(-50%); /* Move up by half the container's height */
+		}
 	}
 
 	/* Responsive Adjustments */
 	@media (max-width: 768px) {
-		h1 {
-			font-size: 1.5rem; /* Adjusted for pixel font */
+		.page {
+			padding: 2rem;
+			min-height: 50vh;
 		}
 
-		.instructions {
-			display: none;
+		.hero-content {
+			max-width: 100%;
+			text-align: center;
 		}
 
-		.matchup-buttons {
-			gap: 15px; /* Reduced gap for smaller screens */
-			flex-direction: column;
+		.hero-content h1 {
+			font-size: 2.5rem;
 		}
 
-		.vs {
+		.hero-content .subtitle {
 			font-size: 1rem;
 		}
-		.page {
-			padding: 0;
-		}
-		.subtitle {
-			display: none;
+
+		.card-background {
+			display: none; /* Hide background cards on mobile */
 		}
 	}
 </style>

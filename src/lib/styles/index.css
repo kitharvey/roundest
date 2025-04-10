@@ -1,25 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap');
+
 :root {
-	/* Light mode variables */
-	--background-color-light: #e0f7fa; /* Light cyan, reminiscent of a clear sky in Pokémon regions */
-	--text-color-light: #333333; /* Dark gray for readability */
-	--primary-color-light: #c62828; /* Darker Poké Ball red for better contrast */
-	--secondary-color-light: #6b5415; /* Deeper Pikachu yellow for better contrast */
-	--border-color-light: #b0bec5; /* Light gray-blue for borders, like a steel-type Pokémon */
-	--button-background-light: #4caf50; /* Grass-type green for buttons */
-	--button-text-light: #1a3c34; /* Dark teal for better contrast on green buttons */
-
-	/* Dark mode variables */
-	--background-color-dark: #263238; /* Dark blue-gray, like a nighttime Pokémon journey */
-	--text-color-dark: #ffffff; /* White text for contrast */
-	--primary-color-dark: #f06292; /* Lighter Poké Ball red for better contrast */
-	--secondary-color-dark: #ffee58; /* Brighter Pikachu yellow for dark mode */
-	--border-color-dark: #546e7a; /* Darker gray-blue for borders */
-	--button-background-dark: #66bb6a; /* Slightly lighter grass green for dark mode */
-	--button-text-dark: #1a3c34; /* Dark teal for better contrast on green buttons */
-
-	/* Shared variables */
-	--accent-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Shadow for a 3D effect, like Pokémon cards */
-	--pokeball-border: 2px solid #212121; /* Black border for Poké Ball-inspired elements */
+	--font-fam: 'Poppins', sans-serif;
+	/* Dark mode variables inspired by fantasy RPGs */
+	--background-start: #2b2f38;
+	--background-end: #1a1d23;
+	--text-primary: #ffffff; /* White for main text */
+	--text-secondary: #b0b3b8; /* Soft gray for secondary text */
+	--accent-primary: #8b0000; /* Deep red for buttons */
+	--accent-secondary: #d4af37; /* Muted gold for highlights */
+	--button-background: #8b0000; /* Deep red for buttons */
+	--button-text: #ffffff; /* White text on buttons */
+	--border-color: #4a4e57; /* Darker gray for borders */
+	--card-background: #3a3f4b; /* Slightly lighter than background */
+	--card-shadow: 0 8px 30px rgba(0, 0, 0, 0.3); /* Darker shadow */
+	--highlight-color: rgba(212, 175, 55, 0.2); /* Gold highlight */
 }
 
 *,
@@ -31,17 +26,42 @@
 }
 
 body {
-	/* Updated font to a pixel style with fallbacks */
-	font-family: 'Press Start 2P', monospace, 'Arial', sans-serif; /* Pixel font with fallbacks */
-	font-size: 14px; /* Base font size adjusted for pixel font readability */
-	line-height: 1.5; /* Increased line height for better readability with pixel font */
-	margin: 0;
-	padding: 0;
-	background-color: var(--background-color-light);
-	color: var(--text-color-light);
+	font-family: var(--font-fam);
+	font-size: 16px;
+	line-height: 1.6;
+	background: linear-gradient(135deg, var(--background-start), var(--background-end));
+	color: var(--text-primary);
+	min-height: 100vh;
 }
 
-body.dark {
-	background-color: var(--background-color-dark);
-	color: var(--text-color-dark);
+/* Headings */
+h1,
+h2,
+h3 {
+	font-weight: 700;
+	color: var(--text-primary);
+}
+
+h1 {
+	font-size: 2.5rem;
+	line-height: 1.2;
+}
+
+h2 {
+	font-size: 2rem;
+}
+
+h3 {
+	font-size: 1.5rem;
+}
+
+/* Paragraphs and secondary text */
+p,
+.secondary-text {
+	color: var(--text-secondary);
+	font-weight: 300;
+}
+
+a {
+	text-decoration: none;
 }
