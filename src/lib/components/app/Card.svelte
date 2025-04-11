@@ -24,8 +24,6 @@
 			<Image src={pokemon.image} alt={formattedName} variant="card" />
 		</div>
 
-		<span class="name">{formattedName}</span>
-
 		<div class="types-container">
 			{#each types as type}
 				<div class="type-icon-wrapper" title={type}>
@@ -39,6 +37,7 @@
 				</div>
 			{/each}
 		</div>
+		<span class="name">{formattedName}</span>
 	</div>
 </div>
 
@@ -96,7 +95,6 @@
 		line-height: 1.1;
 		text-transform: capitalize;
 		color: var(--text-primary); /* White (#ffffff) */
-		margin-bottom: 35px;
 		z-index: 3;
 		position: relative;
 		font-family: var(--font-fam);
@@ -110,10 +108,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		position: absolute;
 		bottom: 15px;
-		left: 0;
-		right: 0;
 		z-index: 3;
 	}
 

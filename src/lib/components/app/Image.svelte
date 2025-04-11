@@ -18,7 +18,9 @@
 
 	let size = $derived(variant === 'card' ? '200' : variant === 'thumb' ? '100' : '32');
 
-	let opts = $derived(`width=${size},height=${size},fit=scale-down,format=webp`);
+	let opts = $derived(
+		`width=${size},height=${size},fit=scale-down,compression=fast,slow-connection-quality=50,quality=70,format=webp`
+	);
 
 	let transformedSrc = $derived(isProd ? `/cdn-cgi/image/${opts}/${encodeURIComponent(src)}` : src);
 </script>
