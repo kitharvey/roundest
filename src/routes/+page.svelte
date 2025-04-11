@@ -38,7 +38,7 @@
 		align-items: center;
 		justify-content: flex-start;
 		height: 100dvh;
-		padding: 3rem 5rem;
+		padding: 3rem 5rem 5rem;
 		background: linear-gradient(135deg, var(--background-start), var(--background-end));
 		overflow: hidden; /* Prevent scrolling */
 	}
@@ -84,10 +84,10 @@
 	/* Background Cards */
 	.card-background {
 		position: absolute;
-		top: -10%;
+		top: -5%;
 		right: 0;
 		width: 50%;
-		height: 120dvh;
+		height: 110dvh;
 		z-index: 1;
 		display: flex;
 		flex-wrap: wrap;
@@ -95,6 +95,7 @@
 		align-content: flex-start; /* Start from the top for scrolling */
 		transform: rotate(15deg); /* Tilt the entire container 5 degrees to the right */
 		overflow: hidden; /* Prevent overflow from container */
+		user-select: none;
 	}
 
 	.card-scroller {
@@ -102,7 +103,7 @@
 		flex-wrap: wrap;
 		gap: 1rem;
 		justify-content: center;
-		width: 100%;
+		width: 120%;
 		animation: scroll 60s linear infinite; /* Infinite scroll animation */
 	}
 
@@ -119,13 +120,14 @@
 	/* Responsive Adjustments */
 	@media (max-width: 768px) {
 		.page {
-			padding: 2rem;
-			min-height: 50vh;
+			padding: 2rem 1rem;
+			width: 100%;
 		}
 
 		.hero-content {
 			max-width: 100%;
 			text-align: center;
+			width: 100%;
 		}
 
 		.hero-content h1 {
@@ -137,7 +139,11 @@
 		}
 
 		.card-background {
-			display: none; /* Hide background cards on mobile */
+			opacity: 0.2;
+			backdrop-filter: blur(50px);
+			width: 100%;
+			top: -10%;
+			height: 120dvh;
 		}
 	}
 </style>

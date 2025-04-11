@@ -4,7 +4,7 @@
 	import { getTypeIcon } from '$lib/workers/getTypeIcon';
 	import type { Pokemon } from '$lib/types';
 
-	let { pokemon }: { pokemon: Pokemon } = $props();
+	let { pokemon, className }: { pokemon: Pokemon; className?: string } = $props();
 
 	let formattedName = $derived(pokemon.name.replaceAll('-', ' '));
 
@@ -16,7 +16,7 @@
 	let formattedId = $derived(`#${pokemon.id.toString().padStart(3, '0')}`);
 </script>
 
-<div class="card-container">
+<div class={`card-container ${className}`}>
 	<div class="card" style={bgColor}>
 		<span class="id-number">{formattedId}</span>
 
@@ -24,20 +24,22 @@
 			<Image src={pokemon.image} alt={formattedName} variant="card" />
 		</div>
 
-		<div class="types-container">
-			{#each types as type}
-				<div class="type-icon-wrapper" title={type}>
-					<Image
-						src={getTypeIcon(type)}
-						class="type-icon"
-						style={types.length > 1 ? 'margin: 0 -5px' : 'margin: 0'}
-						alt={type}
-						variant="icon"
-					/>
-				</div>
-			{/each}
+		<div>
+			<div class="types-container">
+				{#each types as type}
+					<div class="type-icon-wrapper" title={type}>
+						<Image
+							src={getTypeIcon(type)}
+							class="type-icon"
+							style={types.length > 1 ? 'margin: 0 -5px' : 'margin: 0'}
+							alt={type}
+							variant="icon"
+						/>
+					</div>
+				{/each}
+			</div>
+			<span class="name">{formattedName}</span>
 		</div>
-		<span class="name">{formattedName}</span>
 	</div>
 </div>
 
@@ -64,7 +66,7 @@
 		display: flex;
 		align-items: center;
 		flex-direction: column;
-		justify-content: flex-end;
+		justify-content: space-between;
 		overflow: hidden;
 		text-align: center;
 		z-index: 2; /* Ensure content is above the texture */
@@ -82,7 +84,10 @@
 
 	.image-frame {
 		width: 100%;
-		position: relative;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
 		z-index: 3;
 		display: flex;
 		justify-content: center;
@@ -117,5 +122,13 @@
 		/* Add a subtle background to make icons pop */
 		border-radius: 50%;
 		padding: 4px;
+	}
+
+	@media (max-width: 768px) {
+		.mobile {
+			width: 100%;
+			height: 100%;
+			aspect-ratio: unset;
+		}
 	}
 </style>

@@ -45,11 +45,6 @@
 		margin: 0 auto;
 		padding-top: 5rem;
 		min-height: 100dvh;
-		background: linear-gradient(
-			135deg,
-			var(--background-start),
-			var(--background-end)
-		); /* Dark gray gradient */
 	}
 
 	h1 {

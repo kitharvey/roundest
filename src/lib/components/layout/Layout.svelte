@@ -1,25 +1,10 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import '$lib/styles/index.css';
 
 	let { children } = $props();
-	let headerRef = $state<HTMLElement | null>(null);
-	let mainRef = $state<HTMLElement | null>(null);
-
-	onMount(() => {
-		const setPadding = () => {
-			if (headerRef && mainRef) {
-				const headerHeight = headerRef.offsetHeight;
-				mainRef.style.paddingTop = `${headerHeight}px`;
-			}
-		};
-		setPadding(); // Set initial padding
-		window.addEventListener('resize', setPadding); // Update on resize
-		return () => window.removeEventListener('resize', setPadding); // Cleanup
-	});
 </script>
 
-<header bind:this={headerRef}>
+<header>
 	<div class="header-content">
 		<nav>
 			<a href="/">
@@ -32,7 +17,7 @@
 		</nav>
 	</div>
 </header>
-<main bind:this={mainRef}>
+<main>
 	{@render children()}
 </main>
 
@@ -57,6 +42,7 @@
 		padding: 15px 30px;
 		gap: 20px;
 		width: 100%;
+		height: 50px;
 		background: linear-gradient(135deg, var(--background-start), var(--background-end));
 		color: var(--text-primary);
 		box-shadow: var(--card-shadow);
@@ -105,10 +91,6 @@
 
 	/* Responsive Adjustments */
 	@media (max-width: 768px) {
-		header {
-			padding: 20px;
-		}
-
 		nav {
 			align-items: center;
 		}

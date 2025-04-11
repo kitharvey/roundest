@@ -55,7 +55,7 @@
 									disabled={index !== 0}
 									aria-label={`Vote for ${matchup.pokemon1.name}`}
 								>
-									<Card pokemon={matchup.pokemon1} />
+									<Card pokemon={matchup.pokemon1} className="mobile" />
 								</button>
 								<div class="vs" aria-hidden="true">VS</div>
 								<button
@@ -65,7 +65,7 @@
 									disabled={index !== 0}
 									aria-label={`Vote for ${matchup.pokemon2.name}`}
 								>
-									<Card pokemon={matchup.pokemon2} />
+									<Card pokemon={matchup.pokemon2} className="mobile" />
 								</button>
 							</div>
 						</form>
@@ -156,7 +156,6 @@
 		align-items: center;
 		justify-content: center;
 		gap: 2rem;
-		flex-wrap: wrap;
 		width: 100%;
 	}
 
@@ -168,36 +167,37 @@
 		flex-shrink: 0;
 	}
 
-	@media (max-width: 600px) {
+	@media (max-width: 768px) {
 		.page {
-			padding: 1rem;
+			padding: 0;
 		}
 
-		h1 {
-			font-size: clamp(1.8rem, 6vw, 2rem);
-		}
-
-		.subtitle {
-			font-size: clamp(0.9rem, 3.5vw, 1rem);
+		header {
+			display: none;
 		}
 
 		.instructions {
-			margin-bottom: 1.5rem;
-			font-size: 0.9rem;
-		}
-
-		.matchups-container {
-			min-height: 250px;
+			display: none;
 		}
 
 		.matchup-buttons {
-			gap: 1rem;
+			gap: 0;
 			flex-direction: column;
+			justify-content: space-between;
+			overflow: hidden;
+			height: calc(100dvh - 50px);
+			position: fixed;
+			bottom: 0;
+			padding: 0.5rem;
+		}
+
+		.matchup-buttons button {
+			height: calc(50% - 0.25rem);
+			width: 100%;
 		}
 
 		.vs {
-			margin: 0.5rem 0;
-			font-size: 1.2rem;
+			display: none;
 		}
 	}
 </style>
