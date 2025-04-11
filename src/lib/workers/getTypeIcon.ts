@@ -1,32 +1,23 @@
-import { browser } from '$app/environment';
-
-const getTypeIconUrl = (type: string) => {
-	const baseUrl = browser ? window.location.origin : 'https://roundest.pages.dev';
-	return `${baseUrl}/typeIcons/${type}.png`;
+const typeIcons: Record<string, string> = {
+	normal: 'typeIcons/normal.png',
+	fire: 'typeIcons/fire.png',
+	fighting: 'typeIcons/fighting.png',
+	water: 'typeIcons/water.png',
+	flying: 'typeIcons/flying.png',
+	grass: 'typeIcons/grass.png',
+	poison: 'typeIcons/poison.png',
+	electric: 'typeIcons/electric.png',
+	ground: 'typeIcons/ground.png',
+	psychic: 'typeIcons/psychic.png',
+	rock: 'typeIcons/rock.png',
+	ice: 'typeIcons/ice.png',
+	bug: 'typeIcons/bug.png',
+	dragon: 'typeIcons/dragon.png',
+	ghost: 'typeIcons/ghost.png',
+	dark: 'typeIcons/dark.png',
+	steel: 'typeIcons/steel.png',
+	fairy: 'typeIcons/fairy.png'
 };
-
-const typeIcons: Record<string, string> = Object.fromEntries(
-	[
-		'normal',
-		'fire',
-		'fighting',
-		'water',
-		'flying',
-		'grass',
-		'poison',
-		'electric',
-		'ground',
-		'psychic',
-		'rock',
-		'ice',
-		'bug',
-		'dragon',
-		'ghost',
-		'dark',
-		'steel',
-		'fairy'
-	].map((type) => [type, getTypeIconUrl(type)])
-);
 
 export const getTypeIcon = (type: string) => {
 	return typeIcons[type];
