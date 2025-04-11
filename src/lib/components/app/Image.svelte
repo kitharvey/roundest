@@ -25,20 +25,37 @@
 	let transformedSrc = $derived(isProd ? `/cdn-cgi/image/${opts}/${encodeURIComponent(src)}` : src);
 </script>
 
-<img
-	width={size}
-	height={size}
-	loading="eager"
-	decoding="auto"
-	{alt}
-	class={`${className} ${variant}`}
-	src={transformedSrc}
-	{...rest}
-	fetchpriority="high"
-	crossorigin="anonymous"
-	referrerpolicy="no-referrer"
-	{style}
-/>
+{#if variant === 'thumb'}
+	<img
+		width={size}
+		height={size}
+		loading="lazy"
+		decoding="auto"
+		{alt}
+		class={`${className} ${variant}`}
+		src={transformedSrc}
+		{...rest}
+		fetchpriority="low"
+		crossorigin="anonymous"
+		referrerpolicy="no-referrer"
+		{style}
+	/>
+{:else}
+	<img
+		width={size}
+		height={size}
+		loading="eager"
+		decoding="auto"
+		{alt}
+		class={`${className} ${variant}`}
+		src={transformedSrc}
+		{...rest}
+		fetchpriority="high"
+		crossorigin="anonymous"
+		referrerpolicy="no-referrer"
+		{style}
+	/>
+{/if}
 
 <style>
 	img {

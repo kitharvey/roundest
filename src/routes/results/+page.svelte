@@ -15,16 +15,16 @@
 					<span>#{index + 1}</span>
 				</div>
 				<div class="pokemon-info">
-					<Image src={pokemon.image} alt={pokemon.name} variant="thumb" />
+					<Image src={pokemon.image} alt={pokemon.name.replaceAll('-', ' ')} variant="thumb" />
 					<div class="details">
-						<h2>{pokemon.name}</h2>
+						<h2>{pokemon.name.replaceAll('-', ' ')}</h2>
 						<div class="stats">
 							<div class="stat">
 								<span class="label">Wins:</span>
 								<span class="value">{pokemon.winCount}</span>
 							</div>
 							<div class="stat">
-								<span class="label">Total Votes:</span>
+								<span class="label">Matches:</span>
 								<span class="value">{pokemon.totalVotes}</span>
 							</div>
 							<div class="stat">
@@ -126,6 +126,7 @@
 		color: var(--text-primary); /* White (#ffffff) */
 		text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Deeper shadow for RPG effect */
 		margin-bottom: 0.5rem;
+		text-transform: capitalize;
 	}
 
 	.stats {
@@ -154,7 +155,6 @@
 		}
 
 		.pokemon-info {
-			flex-direction: column;
 			align-items: flex-start;
 		}
 
@@ -169,7 +169,7 @@
 			margin: 0;
 			position: absolute;
 			top: 10px;
-			left: 10px;
+			right: 10px;
 		}
 
 		.rank-badge span {
@@ -185,6 +185,10 @@
 
 		.details h2 {
 			font-size: 1rem;
+		}
+
+		h1 {
+			font-size: 1.5rem;
 		}
 	}
 </style>

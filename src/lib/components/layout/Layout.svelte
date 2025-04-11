@@ -3,21 +3,36 @@
 	import '$lib/styles/index.css';
 
 	let { children } = $props();
+	let headerRef = $state<HTMLElement | null>(null);
+	let mainRef = $state<HTMLElement | null>(null);
+
+	onMount(() => {
+		const setPadding = () => {
+			if (headerRef && mainRef) {
+				const headerHeight = headerRef.offsetHeight;
+				mainRef.style.paddingTop = `${headerHeight}px`;
+			}
+		};
+		setPadding(); // Set initial padding
+		window.addEventListener('resize', setPadding); // Update on resize
+		return () => window.removeEventListener('resize', setPadding); // Cleanup
+	});
 </script>
 
-<header>
+<header bind:this={headerRef}>
 	<div class="header-content">
 		<nav>
 			<a href="/">
-				<h1>Roundest</h1>
+				<span>Roundest</span>
 			</a>
 			<div class="menu">
+				<a href="/vote">Vote</a>
 				<a href="/results">Results</a>
 			</div>
 		</nav>
 	</div>
 </header>
-<main>
+<main bind:this={mainRef}>
 	{@render children()}
 </main>
 
@@ -42,13 +57,9 @@
 		padding: 15px 30px;
 		gap: 20px;
 		width: 100%;
-		background: linear-gradient(
-			135deg,
-			var(--background-start),
-			var(--background-end)
-		); /* Dark gray gradient */
-		color: var(--text-primary); /* White text */
-		box-shadow: var(--card-shadow); /* Dark shadow from theme */
+		background: linear-gradient(135deg, var(--background-start), var(--background-end));
+		color: var(--text-primary);
+		box-shadow: var(--card-shadow);
 		transition: background 0.3s ease;
 		z-index: 1000;
 	}
@@ -60,53 +71,58 @@
 		justify-content: space-between;
 	}
 
-	nav h1 {
+	nav span {
 		flex-shrink: 0;
-		font-size: 1.3rem; /* Slightly larger for prominence */
+		font-size: 1.3rem;
 		line-height: 1;
 	}
 
 	a {
-		font-family: var(--font-fam); /* Poppins */
+		font-family: var(--font-fam);
 		text-decoration: none;
-		color: var(--text-primary); /* White */
+		color: var(--text-primary);
 		font-weight: 700;
 		line-height: 1.2;
 		transition: color 0.3s ease;
 	}
 
 	a:hover {
-		color: var(--accent-secondary); /* Muted gold on hover */
+		color: var(--accent-secondary);
 	}
 
 	/* Main Content */
 	main {
-		background: linear-gradient(
-			135deg,
-			var(--background-start),
-			var(--background-end)
-		); /* Dark gray gradient */
-		color: var(--text-primary); /* White text */
-		min-height: 100vh; /* Remaining space */
+		background: linear-gradient(135deg, var(--background-start), var(--background-end));
+		color: var(--text-primary);
+		min-height: 100vh;
 	}
 
 	.menu {
 		display: flex;
 		align-items: center;
+		gap: 1rem;
 	}
 
 	/* Responsive Adjustments */
 	@media (max-width: 768px) {
 		header {
-			padding: 10px 20px;
-		}
-
-		.header-content {
-			gap: 10px;
+			padding: 20px;
 		}
 
 		nav {
-			gap: 10px;
+			align-items: center;
+		}
+
+		.menu {
+			gap: 0.5rem;
+		}
+
+		nav span {
+			font-size: 1.2rem; /* Slightly smaller logo */
+		}
+
+		.menu a {
+			font-size: 0.9rem; /* Smaller menu items */
 		}
 	}
 </style>
