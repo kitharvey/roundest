@@ -45,4 +45,10 @@
 		<meta name="robots" content="noindex, nofollow" />
 		<meta name="googlebot" content="noindex, nofollow" />
 	{/if}
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+	<link
+		href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap"
+		rel="stylesheet"
+	/>
 </svelte:head>
