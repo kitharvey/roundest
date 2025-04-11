@@ -1,9 +1,11 @@
 <script lang="ts">
 	import '$lib/styles/index.css';
+	import BaseHead from './BaseHead.svelte';
 
 	let { children } = $props();
 </script>
 
+<BaseHead />
 <header>
 	<div class="header-content">
 		<nav>
