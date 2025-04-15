@@ -16,7 +16,16 @@
 	</div>
 	<div class="card-background">
 		<div class="card-scroller">
-			<!-- Duplicate the cards to create a seamless loop -->
+			{#each allPokemon as pokemon}
+				{#if pokemon}
+					<Card {pokemon} />
+				{/if}
+			{/each}
+			{#each allPokemon as pokemon}
+				{#if pokemon}
+					<Card {pokemon} />
+				{/if}
+			{/each}
 			{#each allPokemon as pokemon}
 				{#if pokemon}
 					<Card {pokemon} />

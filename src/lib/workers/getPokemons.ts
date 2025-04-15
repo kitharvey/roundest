@@ -1,6 +1,5 @@
 import { pokemon as pokemonSchema } from '$lib/server/db/schema';
 import type { DrizzleD1Database } from 'drizzle-orm/d1';
-import { getImage } from './getImage';
 import type { PokemonType } from '$lib/types';
 import { fetchWithRetry } from './fetchWithRetry';
 
@@ -22,12 +21,16 @@ interface PokemonTypes {
 interface PokemonDetails {
 	id: number;
 	sprites: {
-		front_default?: string;
+		other?: {
+			'official-artwork': {
+				front_default: string;
+			};
+		};
 	};
 	types: PokemonTypes[];
 }
 
-interface GetMorePokemonsResult {
+interface GetPokemonsResult {
 	message: string;
 	saved: number;
 	total: number;
@@ -36,11 +39,11 @@ interface GetMorePokemonsResult {
 	logs: string[];
 }
 
-export async function getMorePokemons(
+export async function getPokemons(
 	db: DrizzleD1Database,
 	limit = 25,
 	offset = 0
-): Promise<GetMorePokemonsResult> {
+): Promise<GetPokemonsResult> {
 	const logs: string[] = [];
 
 	try {
@@ -55,31 +58,32 @@ export async function getMorePokemons(
 
 		let savedCount = 0;
 		const processPromises = results.map(async (pokemon) => {
-			const response = await fetchWithRetry(pokemon.url);
-			const details: PokemonDetails = await response.json();
-
-			const image = getImage(details.id);
-
 			try {
-				await db
-					.insert(pokemonSchema)
-					.values({
-						name: pokemon.name,
-						image: image,
-						types: details.types.map((typeInfo) => typeInfo.type.name) as PokemonType[],
-						id: details.id
-					})
-					.onConflictDoUpdate({
-						target: pokemonSchema.id,
-						set: {
-							name: pokemon.name,
-							types: details.types.map((typeInfo) => typeInfo.type.name) as PokemonType[],
-							image: image
-						}
-					});
+				const response = await fetchWithRetry(pokemon.url);
+				const details: PokemonDetails = await response.json();
+				const image = details.sprites.other?.['official-artwork']?.front_default;
 
-				logs.push(`[DB Save] Saved ${pokemon.name} (ID: ${details.id})`);
-				savedCount++;
+				if (image) {
+					await db
+						.insert(pokemonSchema)
+						.values({
+							name: pokemon.name,
+							image: image,
+							types: details.types.map((typeInfo) => typeInfo.type.name) as PokemonType[],
+							id: details.id
+						})
+						.onConflictDoUpdate({
+							target: pokemonSchema.id,
+							set: {
+								name: pokemon.name,
+								types: details.types.map((typeInfo) => typeInfo.type.name) as PokemonType[],
+								image: image
+							}
+						});
+
+					logs.push(`[DB Save] Saved ${pokemon.name} (ID: ${details.id})`);
+					savedCount++;
+				}
 			} catch (error) {
 				logs.push(`[Process Error] Failed to process ${pokemon.name}: ${String(error)}`);
 				console.error(`Error processing ${pokemon.name}:`, error);

@@ -1,7 +1,7 @@
 import type { PageServerLoad } from './$types';
-import { getMatchups } from '$lib/workers/getMatchups';
+import { getMatchupsOptimized } from '$lib/workers/getMatchupsOptimize';
 
 export const load: PageServerLoad = async ({ locals: { db } }) => {
-	const matchups = await getMatchups(db, 7);
+	const matchups = await getMatchupsOptimized(db, 3);
 	return { matchups };
 };
