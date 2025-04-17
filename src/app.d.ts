@@ -7,6 +7,7 @@ declare global {
 			ctx: ExecutionContext;
 			env: {
 				pokemon: KVNamespace;
+				DB: D1Database;
 			};
 		}
 		interface Locals {

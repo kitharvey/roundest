@@ -53,6 +53,7 @@
 		]
 	},
 	"dependencies": {
+		"@fontsource/poppins": "^5.2.5",
 		"dotenv": "^16.4.7",
 		"drizzle-orm": "^0.41.0",
 		"sass": "^1.86.3"

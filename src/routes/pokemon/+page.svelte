@@ -238,7 +238,7 @@
 
 	.input-group label {
 		font-size: 1rem;
-		font-weight: 600;
+		font-weight: 500;
 		color: var(--text-secondary, #bdc3c7); /* Lighter grey */ /* Changed to match theme */
 	}
 
@@ -346,7 +346,7 @@
 	.feedback-area strong {
 		display: block;
 		margin-bottom: 0.75rem;
-		font-weight: bold;
+		font-weight: 700;
 		color: var(--text-primary, #ecf0f1); /* Clearer label */ /* Changed to match theme */
 		border-bottom: 1px solid var(--border-color, #4a4e57);
 		padding-bottom: 0.5rem;

@@ -161,7 +161,7 @@
 
 	.vs {
 		font-size: clamp(1.5rem, 4vw, 2rem);
-		font-weight: bold;
+		font-weight: 700;
 		color: var(--accent-primary);
 		text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 		flex-shrink: 0;

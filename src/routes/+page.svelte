@@ -3,9 +3,7 @@
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
-	let { matchups } = $derived(data);
-
-	let allPokemon = $derived(matchups.flatMap((matchup) => [matchup.pokemon1, matchup.pokemon2]));
+	let { pokemons } = $derived(data);
 </script>
 
 <div class="page">
@@ -16,22 +14,7 @@
 	</div>
 	<div class="card-background">
 		<div class="card-scroller">
-			{#each allPokemon as pokemon}
-				{#if pokemon}
-					<Card {pokemon} />
-				{/if}
-			{/each}
-			{#each allPokemon as pokemon}
-				{#if pokemon}
-					<Card {pokemon} />
-				{/if}
-			{/each}
-			{#each allPokemon as pokemon}
-				{#if pokemon}
-					<Card {pokemon} />
-				{/if}
-			{/each}
-			{#each allPokemon as pokemon}
+			{#each pokemons as pokemon}
 				{#if pokemon}
 					<Card {pokemon} />
 				{/if}

@@ -102,7 +102,7 @@
 
 	.rank-badge span {
 		font-size: 1.2rem;
-		font-weight: bold;
+		font-weight: 700;
 	}
 
 	.pokemon-info {
