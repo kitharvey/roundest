@@ -1,3 +1,4 @@
+import type { Session, User } from 'better-auth';
 import type { DrizzleD1Database } from 'drizzle-orm/d1';
 
 declare global {
@@ -11,9 +12,9 @@ declare global {
 			};
 		}
 		interface Locals {
-			// Matchup is now globally defined, no import needed
-			matchups: Matchup[] | null;
 			db: DrizzleD1Database;
+			auth: BetterAuth;
+			session: { session: Session; user: User } | null;
 		}
 	}
 }

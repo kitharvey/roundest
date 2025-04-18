@@ -41,6 +41,7 @@
 		"prettier-plugin-svelte": "^3.3.3",
 		"svelte": "^5.0.0",
 		"svelte-check": "^4.0.0",
+		"tsx": "^4.19.3",
 		"typescript": "^5.0.0",
 		"typescript-eslint": "^8.20.0",
 		"vite": "^6.0.0",
@@ -54,6 +55,8 @@
 	},
 	"dependencies": {
 		"@fontsource/poppins": "^5.2.5",
+		"@libsql/client": "^0.15.4",
+		"better-auth": "^1.2.7",
 		"dotenv": "^16.4.7",
 		"drizzle-orm": "^0.41.0",
 		"sass": "^1.86.3"
