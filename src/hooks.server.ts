@@ -6,7 +6,7 @@ import { svelteKitHandler } from 'better-auth/svelte-kit';
 import { sequence } from '@sveltejs/kit/hooks';
 
 const PROTECTED_ROUTE_PREFIX = '/pokemon';
-const LOGIN_ROUTE = '/login';
+const LOGIN_ROUTE = '/signin';
 
 const initialize: Handle = async ({ event, resolve }) => {
 	if (!event.platform?.env?.DB) {

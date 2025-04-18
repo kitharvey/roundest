@@ -1,10 +1,20 @@
 <script lang="ts">
 	import '$lib/styles/index.css';
+	import { authClient } from '$lib/auth/client';
 	import BaseHead from './BaseHead.svelte';
 
 	let { children } = $props();
+
+	const signOut = async () => {
+		await authClient.signOut();
+	};
+
+	let session = $derived(authClient.useSession());
 </script>
 
+<svelte:head>
+	<title>Roundest</title>
+</svelte:head>
 <BaseHead />
 <header>
 	<div class="header-content">
@@ -15,6 +25,10 @@
 			<div class="menu">
 				<a href="/vote">Vote</a>
 				<a href="/results">Results</a>
+				<a href="/pokemon">Pokemons</a>
+				{#if $session.data}
+					<button onclick={signOut}> Logout </button>
+				{/if}
 			</div>
 		</nav>
 	</div>
@@ -65,16 +79,23 @@
 		line-height: 1;
 	}
 
-	a {
+	a,
+	button {
 		font-family: var(--font-fam);
 		text-decoration: none;
 		color: var(--text-primary);
 		font-weight: 700;
 		line-height: 1.2;
 		transition: color 0.3s ease;
+		cursor: pointer;
+		background: none;
+		outline: none;
+		border: none;
+		font-size: 1rem;
 	}
 
-	a:hover {
+	a:hover,
+	button:hover {
 		color: var(--accent-secondary);
 	}
 
@@ -91,22 +112,22 @@
 		gap: 1rem;
 	}
 
-	/* Responsive Adjustments */
 	@media (max-width: 768px) {
 		nav {
 			align-items: center;
 		}
 
-		.menu {
-			gap: 0.5rem;
+		nav span {
+			font-size: 1.2rem;
 		}
 
-		nav span {
-			font-size: 1.2rem; /* Slightly smaller logo */
+		.menu {
+			gap: 0.5rem;
+			align-items: center;
 		}
 
 		.menu a {
-			font-size: 0.9rem; /* Smaller menu items */
+			font-size: 0.9rem;
 		}
 	}
 </style>
