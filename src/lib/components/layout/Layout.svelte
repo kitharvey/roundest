@@ -2,11 +2,18 @@
 	import '$lib/styles/index.css';
 	import { authClient } from '$lib/auth/client';
 	import BaseHead from './BaseHead.svelte';
+	import { goto } from '$app/navigation';
 
 	let { children } = $props();
 
 	const signOut = async () => {
-		await authClient.signOut();
+		await authClient.signOut({
+			fetchOptions: {
+				onSuccess: () => {
+					goto('/');
+				}
+			}
+		});
 	};
 
 	let session = $derived(authClient.useSession());

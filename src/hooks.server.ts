@@ -1,4 +1,4 @@
-import { GH_USER_ID } from '$env/static/private';
+import { GH_USER } from '$env/static/private';
 import { getAuth } from '$lib/auth';
 import { getDb } from '$lib/server/db';
 import { redirect, type Handle, error } from '@sveltejs/kit';
@@ -32,9 +32,8 @@ const initialize: Handle = async ({ event, resolve }) => {
 const authorize: Handle = async ({ event, resolve }) => {
 	const pathname = event.url.pathname;
 	const session = event.locals.session;
-
 	if (pathname.startsWith(PROTECTED_ROUTE_PREFIX)) {
-		if (!session || session.user?.id !== GH_USER_ID) {
+		if (!session || session.user?.email !== GH_USER) {
 			console.log(
 				`Unauthorized access attempt to ${PROTECTED_ROUTE_PREFIX} by user ${session?.user?.id ?? 'anonymous'}. Redirecting to login.`
 			);
