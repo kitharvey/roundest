@@ -89,14 +89,15 @@ export async function getPokemons(
 				// Fetch Pokémon details
 				const response = await fetchWithRetry(pokemon.url);
 				const details: PokemonDetails = await response.json();
-				const image = details.sprites.other?.['official-artwork']?.front_default;
+				const sprite = details.sprites.other?.['official-artwork']?.front_default;
 
-				if (image && bucket) {
+				if (sprite && bucket) {
 					const key = `pokemon/${details.id}.png`;
 					const types = details.types.map((typeInfo) => typeInfo.type.name) as PokemonType[];
+					const bucketURL = 'https://pokemon-images.kitharvey.dev/';
+					const image = bucketURL + key;
 
-					// Concurrently upload image to R2 and save to DB
-					const uploadPromise = uploadImageToR2(image, bucket, key);
+					const uploadPromise = uploadImageToR2(sprite, bucket, key);
 					const savePromise = db
 						.insert(pokemonSchema)
 						.values({
