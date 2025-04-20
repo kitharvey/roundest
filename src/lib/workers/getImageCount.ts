@@ -1,5 +1,7 @@
 // Define the return type for the count function
-type CountResult = { success: true; count: number } | { success: false; error: string };
+type CountResult =
+	| { success: true; count: number }
+	| { success: false; error: string; count: number };
 
 /**
  * Retrieves the number of images saved in an R2 bucket.
@@ -36,6 +38,6 @@ export async function getImageCount(
 		return { success: true, count };
 	} catch (error: unknown) {
 		const errorMessage = error instanceof Error ? error.message : String(error);
-		return { success: false, error: errorMessage };
+		return { success: false, error: errorMessage, count: 0 };
 	}
 }

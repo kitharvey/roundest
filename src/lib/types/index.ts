@@ -35,3 +35,40 @@ export interface UploadResult {
 	key: string;
 	error?: string;
 }
+
+export interface PokemonResponse {
+	name: string;
+	url: string;
+}
+
+interface PokemonTypeRaw {
+	name: string;
+	url: string;
+}
+
+interface PokemonTypesRaw {
+	slot: number;
+	type: PokemonTypeRaw;
+}
+
+export interface PokemonDetails {
+	id: number;
+	sprites: {
+		other?: {
+			'official-artwork': {
+				front_default: string;
+			};
+		};
+	};
+	types: PokemonTypesRaw[];
+}
+
+// Result type for the function
+export interface GetPokemonsResult {
+	message: string;
+	saved: number;
+	total: number;
+	offset: number;
+	limit: number;
+	logs: string[];
+}
