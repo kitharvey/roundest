@@ -10,11 +10,12 @@ export const load: PageServerLoad = async ({ locals: { db } }) => {
 };
 
 export const actions: Actions = {
-	add: async ({ request, locals: { db } }) => {
+	add: async ({ request, platform, locals: { db } }) => {
+		const bucket = platform?.env?.pokemon_images;
 		const data = await request.formData();
 		const limit = Number(data.get('limit'));
 		const offset = Number(data.get('offset'));
-		const { logs } = await getPokemons(db, limit, offset);
+		const { logs } = await getPokemons(db, limit, offset, bucket);
 		return { logs };
 	},
 	delete: async ({ locals: { db } }) => {

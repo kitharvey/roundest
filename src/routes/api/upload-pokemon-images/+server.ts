@@ -1,51 +1,6 @@
+import type { UploadResult } from '$lib/types';
+import { uploadImageToR2 } from '$lib/workers/uploadImageToR2';
 import { json, type RequestHandler } from '@sveltejs/kit';
-
-interface UploadResult {
-	success: boolean;
-	key: string;
-	error?: string;
-}
-
-// Corrected function: Reads the response into an ArrayBuffer first
-async function uploadImageToR2(url: string, bucket: R2Bucket, key: string): Promise<UploadResult> {
-	try {
-		const response = await fetch(url);
-		if (!response.ok) {
-			throw new Error(
-				`Failed to fetch image from ${url}: ${response.status} ${response.statusText}`
-			);
-		}
-
-		// --- FIX STARTS HERE ---
-		// Read the entire response body into an ArrayBuffer.
-		// This provides R2 with data that has a known length.
-		const imageData = await response.arrayBuffer();
-		if (!imageData || imageData.byteLength === 0) {
-			throw new Error(`Image data missing or empty for ${url}`);
-		}
-		// --- FIX ENDS HERE ---
-
-		const contentType = response.headers.get('content-type') || 'image/png';
-
-		// Upload the ArrayBuffer instead of the response.body stream
-		console.log({ imageData });
-		await bucket.put(key, imageData, {
-			// <--- Use imageData here
-			httpMetadata: {
-				contentType: contentType
-				// Content-Length is automatically handled for ArrayBuffer
-			}
-		});
-
-		console.log(`Successfully uploaded ${key}`); // Optional logging
-		return { success: true, key };
-	} catch (error: any) {
-		// or error: unknown
-		console.error(`Failed to upload ${key}:`, error);
-		const errorMessage = error instanceof Error ? error.message : String(error);
-		return { success: false, key, error: errorMessage };
-	}
-}
 
 // The GET handler remains largely the same, just ensure type safety if using TS
 export const GET: RequestHandler = async (event) => {

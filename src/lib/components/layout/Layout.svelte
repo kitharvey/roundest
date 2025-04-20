@@ -33,7 +33,7 @@
 				<a href="/vote">Vote</a>
 				<a href="/results">Results</a>
 				{#if $session.data}
-					<a href="/pokemon">Pokemons</a>
+					<a href="/manage">Manage</a>
 					<button onclick={signOut}> Logout </button>
 				{/if}
 			</div>

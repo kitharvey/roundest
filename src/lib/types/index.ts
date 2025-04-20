@@ -29,3 +29,9 @@ export interface Matchup {
 	pokemon1: Pokemon;
 	pokemon2: Pokemon;
 }
+
+export interface UploadResult {
+	success: boolean;
+	key: string;
+	error?: string;
+}
