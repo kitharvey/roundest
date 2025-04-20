@@ -7,8 +7,8 @@ declare global {
 			cf: CfProperties;
 			ctx: ExecutionContext;
 			env: {
-				pokemon: KVNamespace;
 				DB: D1Database;
+				pokemon_images: R2Bucket;
 			};
 		}
 		interface Locals {
