@@ -5,7 +5,7 @@ import { redirect, type Handle, error } from '@sveltejs/kit';
 import { svelteKitHandler } from 'better-auth/svelte-kit';
 import { sequence } from '@sveltejs/kit/hooks';
 
-const PROTECTED_ROUTE_PREFIX = '/pokemon';
+const PROTECTED_ROUTE_PREFIX = '/manage';
 const LOGIN_ROUTE = '/signin';
 
 const initialize: Handle = async ({ event, resolve }) => {
