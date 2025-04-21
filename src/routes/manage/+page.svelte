@@ -15,7 +15,6 @@
 	// State for image actions
 	let uploadLoading = $state(false);
 	let deleteImagesLoading = $state(false);
-	let getImagesLoading = $state(false);
 
 	// Input values
 	let limit = $state(25);
@@ -27,7 +26,6 @@
 	let getFeedback = $state<string | null>(null);
 	let uploadLogs = $state<string[]>([]);
 	let deleteImagesFeedback = $state<string | null>(null);
-	let getImagesFeedback = $state<string | null>(null);
 
 	// Action result interfaces
 	interface AddActionResult {
