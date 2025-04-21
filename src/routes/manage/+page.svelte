@@ -232,7 +232,7 @@
 
 	<form method="POST" action="?/upload-images" use:enhance={handleUploadImages} class="action-form">
 		<h2>Upload Pokémon Images</h2>
-
+		<input type="hidden" name="offset" value={totalImages} />
 		<div class="input-group">
 			<label for="upload-limit">Limit:</label>
 			<input
