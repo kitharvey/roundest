@@ -23,9 +23,9 @@
 	let opts = $derived(
 		`width=${size},height=${size},fit=scale-down,compression=fast,slow-connection-quality=50,quality=70,format=webp`
 	);
-	let source = $derived(PUBLIC_IMG_BASE_URL + src);
+	let source = $derived(PUBLIC_IMG_BASE_URL === '/' ? src : PUBLIC_IMG_BASE_URL + src);
 	let transformedSrc = $derived(
-		isProd ? `/cdn-cgi/image/${opts}/${encodeURIComponent(source)}` : `/${source}`
+		isProd ? `/cdn-cgi/image/${opts}/${encodeURIComponent(source)}` : source
 	);
 </script>
 
