@@ -1,9 +1,9 @@
 import type { Actions, PageServerLoad } from './$types';
-import { getMatchups } from '$lib/workers/getMatchups';
-import { votes } from '$lib/server/db/schema';
+import { votes as votesSchema } from '$lib/server/db/schema';
+import { getMatchupsOptimized } from '$lib/workers/getMatchupsOptimize';
 
 export const load: PageServerLoad = async ({ locals: { db } }) => {
-	const matchups = await getMatchups(db, 3);
+	const matchups = await getMatchupsOptimized(db, 3);
 	return { matchups };
 };
 
@@ -21,11 +21,13 @@ export const actions: Actions = {
 		const loserId = winnerId === pokemon1Id ? pokemon2Id : pokemon1Id;
 
 		try {
-			await db.insert(votes).values({ pokemonId: winnerId, voteType: 'win' });
-			await db.insert(votes).values({ pokemonId: loserId, voteType: 'loss' });
-
-			const matchup = await getMatchups(db, 1);
-			return { success: true, matchup };
+			await db.transaction(async (tx) => {
+				await tx.insert(votesSchema).values([
+					{ pokemonId: winnerId, voteType: 'win' },
+					{ pokemonId: loserId, voteType: 'loss' }
+				]);
+			});
+			return { success: true };
 		} catch (error) {
 			console.error('Vote recording failed:', error);
 			return { success: false, error: 'Failed to record vote' };

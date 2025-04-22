@@ -5,27 +5,20 @@
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
-	let { totalPokemons, totalImages } = $derived(data);
+	let { totalPokemons } = $derived(data);
 
 	// State for Pokémon data actions
 	let addLoading = $state(false);
 	let deleteLoading = $state(false);
 	let getLoading = $state(false);
 
-	// State for image actions
-	let uploadLoading = $state(false);
-	let deleteImagesLoading = $state(false);
-
 	// Input values
 	let limit = $state(25);
-	let uploadLimit = $state(25);
 
 	// Feedback states
 	let addLogs = $state<string[]>([]);
 	let deleteFeedback = $state<string | null>(null);
 	let getFeedback = $state<string | null>(null);
-	let uploadLogs = $state<string[]>([]);
-	let deleteImagesFeedback = $state<string | null>(null);
 
 	// Action result interfaces
 	interface AddActionResult {
@@ -43,22 +36,6 @@
 		status?: number;
 		data?: { pokemon?: unknown; total?: number; message?: string };
 	}
-	interface UploadActionResult {
-		type: 'success' | 'error' | 'failure';
-		status?: number;
-		data?: { logs?: string[]; message?: string };
-	}
-	interface DeleteImagesActionResult {
-		type: 'success' | 'error' | 'failure';
-		status?: number;
-		data?: { message?: string; error?: string };
-	}
-	interface GetImagesActionResult {
-		type: 'success' | 'error' | 'failure';
-		status?: number;
-		data?: { count?: number; error?: string };
-	}
-
 	// Submit handlers
 	const handleAddMore: SubmitFunction = () => {
 		addLoading = true;
@@ -117,40 +94,6 @@
 			}
 			await update({ reset: false });
 			getLoading = false;
-		};
-	};
-
-	const handleUploadImages: SubmitFunction = () => {
-		uploadLoading = true;
-		uploadLogs = [];
-		return async ({ result, update }) => {
-			const actionResult = result as UploadActionResult;
-			if (actionResult.type === 'success' && actionResult.data?.logs) {
-				uploadLogs = actionResult.data.logs;
-			} else if (actionResult.type === 'error' || actionResult.type === 'failure') {
-				console.error('Upload images failed:', actionResult);
-				uploadLogs = [
-					`Error: ${actionResult.data?.message || actionResult.data?.error || `Failed with status ${actionResult.status || 'unknown'}`}`
-				];
-			}
-			await update({ reset: false });
-			uploadLoading = false;
-		};
-	};
-
-	const handleDeleteImages: SubmitFunction = () => {
-		deleteImagesLoading = true;
-		deleteImagesFeedback = null;
-		return async ({ result, update }) => {
-			const actionResult = result as DeleteImagesActionResult;
-			if (actionResult.type === 'success') {
-				deleteImagesFeedback = actionResult.data?.message || 'Images deleted successfully.';
-			} else if (actionResult.type === 'error' || actionResult.type === 'failure') {
-				deleteImagesFeedback = `Error: ${actionResult.data?.error || actionResult.data?.message || `Failed with status ${actionResult.status || 'unknown'}`}`;
-				console.error('Delete images failed:', actionResult);
-			}
-			await update({ reset: false });
-			deleteImagesLoading = false;
 		};
 	};
 </script>
@@ -222,57 +165,6 @@
 			<div class="data feedback-area" aria-live="polite">
 				<strong>Get Results:</strong>
 				<pre>{getFeedback}</pre>
-			</div>
-		{/if}
-	</form>
-
-	<div class="section-title">Pokémon Image Management</div>
-
-	<form method="POST" action="?/upload-images" use:enhance={handleUploadImages} class="action-form">
-		<h2>Upload Pokémon Images</h2>
-		<input type="hidden" name="offset" value={totalImages} />
-		<div class="input-group">
-			<label for="upload-limit">Limit:</label>
-			<input
-				type="number"
-				id="upload-limit"
-				name="limit"
-				bind:value={uploadLimit}
-				min="1"
-				max="100"
-				class="limit-input"
-				required
-			/>
-		</div>
-		<button type="submit" disabled={uploadLoading} class="button upload-button">
-			{#if uploadLoading}
-				<span class="spinner" aria-hidden="true"></span> Uploading...
-			{:else}
-				Upload {uploadLimit} Images (Offset: {totalImages})
-			{/if}
-		</button>
-		{#if uploadLogs.length > 0}
-			<div class="logs feedback-area" aria-live="polite">
-				<strong>Upload Results:</strong>
-				{#each uploadLogs as log, i (i)}
-					<div class="log-entry">{log}</div>
-				{/each}
-			</div>
-		{/if}
-	</form>
-
-	<form method="POST" action="?/delete-images" use:enhance={handleDeleteImages} class="action-form">
-		<h2>Delete All Images</h2>
-		<button type="submit" disabled={deleteImagesLoading} class="button delete-button">
-			{#if deleteImagesLoading}
-				<span class="spinner" aria-hidden="true"></span> Deleting...
-			{:else}
-				Delete All Images
-			{/if}
-		</button>
-		{#if deleteImagesFeedback}
-			<div class="message feedback-area" aria-live="polite">
-				{deleteImagesFeedback}
 			</div>
 		{/if}
 	</form>
@@ -408,13 +300,6 @@
 	}
 	.get-button:hover:not(:disabled) {
 		background-color: var(--button-info-hover, #3498db);
-	}
-
-	.upload-button {
-		background-color: var(--button-upload-bg, #f39c12);
-	}
-	.upload-button:hover:not(:disabled) {
-		background-color: var(--button-upload-hover, #e67e22);
 	}
 
 	/* Loading Spinner */

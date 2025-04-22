@@ -4,23 +4,40 @@
 	import Card from '$lib/components/app/Card.svelte';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import type { PageProps } from './$types';
+	import type { Matchup } from '$lib/types';
 
 	let { data }: PageProps = $props();
 	let matchups = $state(data.matchups);
 	let mainRef = $state<HTMLElement | null>(null);
 
-	const voteEnhance: SubmitFunction = () => {
-		return async ({ result }) => {
-			if (result.type === 'success' && result.data?.matchup) {
-				const newMatchupsData = Array.isArray(result.data.matchup)
-					? result.data.matchup
-					: [result.data.matchup];
+	const voteEnhance: SubmitFunction = async () => {
+		let fetchDuration = 0;
+		let jsonDuration = 0;
 
-				matchups.shift();
-				matchups = [...matchups, ...newMatchupsData];
-			} else if (result.type === 'error') {
+		try {
+			const startFetch = performance.now();
+			const response = await fetch('/api/get-matchup');
+			fetchDuration = performance.now() - startFetch;
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const startJson = performance.now();
+			const matchup: Matchup[] = await response.json();
+			jsonDuration = performance.now() - startJson;
+
+			matchups = [...matchups, matchup[0]];
+		} catch (error) {
+			console.error('Failed to fetch new matchup:', error);
+		}
+
+		return async ({ result }) => {
+			if (result.type === 'error') {
 				console.error('Form submission error:', result.error);
 			}
+
+			matchups.shift();
 			await tick();
 			mainRef?.focus();
 		};

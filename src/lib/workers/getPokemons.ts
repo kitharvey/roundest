@@ -28,10 +28,8 @@ export async function getPokemons(
 					const sprite = details.sprites.other?.['official-artwork']?.front_default;
 
 					if (sprite) {
-						const key = `pokemon/${details.id}.png`;
+						const image = `pokemon/${details.id}.png`;
 						const types = details.types.map((typeInfo) => typeInfo.type.name) as PokemonType[];
-						const bucketURL = 'https://pokemon-images.kitharvey.dev/';
-						const image = `${bucketURL}${key}`;
 
 						await db
 							.insert(pokemonSchema)

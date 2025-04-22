@@ -26,7 +26,7 @@ export async function downloadPokemonImages(limit = 25, offset = 0) {
 	const logs = [];
 	let downloadedCount = 0;
 	let failedCount = 0;
-	const baseDir = path.join(process.cwd(), 'src', 'static', 'pokemon');
+	const baseDir = path.join(process.cwd(), 'static', 'pokemon');
 
 	try {
 		logs.push(
@@ -98,8 +98,8 @@ export async function downloadPokemonImages(limit = 25, offset = 0) {
 }
 
 async function main() {
-	const limit = 151; // Number of Pokémon to download (e.g., original 151 Pokémon)
-	const offset = 0; // Starting index (0 for the first Pokémon)
+	const limit = 1025;
+	const offset = 151;
 
 	try {
 		const result = await downloadPokemonImages(limit, offset);
