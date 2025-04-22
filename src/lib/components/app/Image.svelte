@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { PUBLIC_IMG_BASE_URL } from '$env/static/public';
 	import { page } from '$app/state';
 
 	let {
@@ -17,7 +16,8 @@
 		style?: string;
 	}>();
 
-	const isTransform = page.url.searchParams.get('transform');
+	const isTransform = page.url.searchParams.get('transform') === 'true';
+	const imgBaseUrl = page.url.searchParams.get('imgBaseUrl') || '';
 
 	const isProd = import.meta.env.PROD;
 
@@ -26,7 +26,7 @@
 	let opts = $derived(
 		`width=${size},height=${size},fit=scale-down,compression=fast,slow-connection-quality=50,quality=70,format=webp`
 	);
-	let source = $derived(PUBLIC_IMG_BASE_URL === '/' ? src : PUBLIC_IMG_BASE_URL + src);
+	let source = $derived(imgBaseUrl ? imgBaseUrl + src : src);
 	let transformedSrc = $derived(
 		isProd && isTransform ? `/cdn-cgi/image/${opts}/${encodeURIComponent(source)}` : source
 	);
