@@ -24,7 +24,10 @@
 			"bucket_name": "pokemon-images",
 			"binding": "pokemon_images"
 		}
-	]
+	],
+	"vars": {
+		"NODE_VERSION": "20"
+	}
 
 	/**
 	 * Smart Placement
