@@ -11,33 +11,16 @@
 	let mainRef = $state<HTMLElement | null>(null);
 
 	const voteEnhance: SubmitFunction = async () => {
-		let fetchDuration = 0;
-		let jsonDuration = 0;
-
-		try {
-			const startFetch = performance.now();
-			const response = await fetch('/api/get-matchup');
-			fetchDuration = performance.now() - startFetch;
-
-			if (!response.ok) {
-				throw new Error(`HTTP error! status: ${response.status}`);
-			}
-
-			const startJson = performance.now();
-			const matchup: Matchup[] = await response.json();
-			jsonDuration = performance.now() - startJson;
-
-			matchups = [...matchups, matchup[0]];
-		} catch (error) {
-			console.error('Failed to fetch new matchup:', error);
-		}
-
 		return async ({ result }) => {
-			if (result.type === 'error') {
+			console.log({ result });
+			if (result.type === 'success') {
+				const newMatchup = result?.data?.matchup as Matchup[];
+				matchups = [...matchups, ...newMatchup];
+				matchups.shift();
+			} else if (result.type === 'error') {
 				console.error('Form submission error:', result.error);
 			}
 
-			matchups.shift();
 			await tick();
 			mainRef?.focus();
 		};

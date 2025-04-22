@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { Actions, PageServerLoad } from './$types';
 import { votes as votesSchema } from '$lib/server/db/schema';
 import { getMatchupsOptimized } from '$lib/workers/getMatchupsOptimize';
@@ -21,13 +22,14 @@ export const actions: Actions = {
 		const loserId = winnerId === pokemon1Id ? pokemon2Id : pokemon1Id;
 
 		try {
-			await db.transaction(async (tx) => {
-				await tx.insert(votesSchema).values([
+			const [_, matchup] = await Promise.all([
+				db.insert(votesSchema).values([
 					{ pokemonId: winnerId, voteType: 'win' },
 					{ pokemonId: loserId, voteType: 'loss' }
-				]);
-			});
-			return { success: true };
+				]),
+				getMatchupsOptimized(db, 1)
+			]);
+			return { success: true, matchup };
 		} catch (error) {
 			console.error('Vote recording failed:', error);
 			return { success: false, error: 'Failed to record vote' };
