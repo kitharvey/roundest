@@ -25,7 +25,7 @@
 	);
 	let source = $derived(PUBLIC_IMG_BASE_URL + src);
 	let transformedSrc = $derived(
-		isProd ? `/cdn-cgi/image/${opts}/${encodeURIComponent(source)}` : source
+		isProd ? `/cdn-cgi/image/${opts}/${encodeURIComponent(source)}` : `/${source}`
 	);
 </script>
 
