@@ -12,13 +12,10 @@
 
 	const voteEnhance: SubmitFunction = async () => {
 		return async ({ result }) => {
-			console.log({ result });
 			if (result.type === 'success') {
 				const newMatchup = result?.data?.matchup as Matchup[];
 				matchups = [...matchups, ...newMatchup];
 				matchups.shift();
-			} else if (result.type === 'error') {
-				console.error('Form submission error:', result.error);
 			}
 
 			await tick();

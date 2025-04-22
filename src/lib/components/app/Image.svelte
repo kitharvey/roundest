@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { PUBLIC_IMG_BASE_URL } from '$env/static/public';
+	import { page } from '$app/state';
 
 	let {
 		src,
@@ -16,6 +17,8 @@
 		style?: string;
 	}>();
 
+	const isTransform = page.url.searchParams.get('transform');
+
 	const isProd = import.meta.env.PROD;
 
 	let size = $derived(variant === 'card' ? '200' : variant === 'thumb' ? '100' : '32');
@@ -25,7 +28,7 @@
 	);
 	let source = $derived(PUBLIC_IMG_BASE_URL === '/' ? src : PUBLIC_IMG_BASE_URL + src);
 	let transformedSrc = $derived(
-		isProd ? `/cdn-cgi/image/${opts}/${encodeURIComponent(source)}` : source
+		isProd && isTransform ? `/cdn-cgi/image/${opts}/${encodeURIComponent(source)}` : source
 	);
 </script>
 
