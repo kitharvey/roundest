@@ -16,7 +16,7 @@
 		style?: string;
 	}>();
 
-	const isTransform = page.url.searchParams.get('transform') === 'true';
+	const isTransform = page.url.searchParams.get('transform') !== 'false';
 	const imgBaseUrl = page.url.searchParams.get('imgBaseUrl') || '';
 
 	const isProd = import.meta.env.PROD;
