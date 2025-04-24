@@ -33,14 +33,12 @@ export async function downloadPokemonImages(limit = 25, offset = 0) {
 			`[Download Start] Downloading images for Pokémon (offset: ${offset}, limit: ${limit})...`
 		);
 
-		// Fetch the list of Pokémon
 		const response = await fetch(
 			`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`
 		);
 		const { results } = await response.json();
 		logs.push(`[List Fetch Success] Fetched ${results.length} Pokémon.`);
 
-		// Process each Pokémon sequentially
 		for (const pokemon of results) {
 			try {
 				const detailsResponse = await fetch(pokemon.url);

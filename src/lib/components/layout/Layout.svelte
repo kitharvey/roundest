@@ -30,8 +30,8 @@
 				<span>Roundest</span>
 			</a>
 			<div class="menu">
-				<a href="/vote">Vote</a>
-				<a href="/results">Results</a>
+				<a data-sveltekit-preload-data="hover" href="/vote">Vote</a>
+				<a data-sveltekit-preload-data="hover" href="/results">Results</a>
 				{#if $session.data}
 					<a href="/manage">Manage</a>
 					<button onclick={signOut}> Logout </button>

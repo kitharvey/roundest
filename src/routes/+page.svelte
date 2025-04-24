@@ -10,10 +10,15 @@
 	<div class="hero-content">
 		<h1>Who's Rounder?</h1>
 		<p class="subtitle">Vote for the roundest Pokémon!</p>
-		<a href="/vote" class="start-button">Start Voting</a>
+		<a data-sveltekit-preload-data="hover" href="/vote" class="start-button">Start Voting</a>
 	</div>
 	<div class="card-background">
 		<div class="card-scroller">
+			{#each pokemons as pokemon}
+				{#if pokemon}
+					<Card {pokemon} />
+				{/if}
+			{/each}
 			{#each pokemons as pokemon}
 				{#if pokemon}
 					<Card {pokemon} />
