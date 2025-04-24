@@ -9,9 +9,11 @@
 	let { data }: PageProps = $props();
 	let matchups = $state(data.matchups);
 	let mainRef = $state<HTMLElement | null>(null);
+	let disabled = $state(false);
 
 	const voteEnhance: SubmitFunction = async () => {
 		const start = performance.now();
+		disabled = true;
 		return async ({ result }) => {
 			if (result.type === 'success') {
 				const newMatchup = result?.data?.matchup as Matchup[];
@@ -21,7 +23,7 @@
 
 			const end = performance.now();
 			console.log(`Vote enhance took ${Math.round(end - start)} milliseconds`);
-
+			disabled = false;
 			await tick();
 			mainRef?.focus();
 		};
@@ -53,7 +55,7 @@
 									type="submit"
 									name="winner_id"
 									value={matchup.pokemon1.id}
-									disabled={index !== 0}
+									disabled={index !== 0 || disabled}
 									aria-label={`Vote for ${matchup.pokemon1.name}`}
 								>
 									<Card pokemon={matchup.pokemon1} className="mobile" />
@@ -63,7 +65,7 @@
 									type="submit"
 									name="winner_id"
 									value={matchup.pokemon2.id}
-									disabled={index !== 0}
+									disabled={index !== 0 || disabled}
 									aria-label={`Vote for ${matchup.pokemon2.name}`}
 								>
 									<Card pokemon={matchup.pokemon2} className="mobile" />
@@ -108,6 +110,9 @@
 		border: none;
 		background: none;
 		cursor: pointer;
+	}
+	button:disabled {
+		cursor: progress;
 	}
 
 	.instructions {
