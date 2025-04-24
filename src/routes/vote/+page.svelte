@@ -11,12 +11,16 @@
 	let mainRef = $state<HTMLElement | null>(null);
 
 	const voteEnhance: SubmitFunction = async () => {
+		const start = performance.now();
 		return async ({ result }) => {
 			if (result.type === 'success') {
 				const newMatchup = result?.data?.matchup as Matchup[];
 				matchups = [...matchups, ...newMatchup];
 				matchups.shift();
 			}
+
+			const end = performance.now();
+			console.log(`Vote enhance took ${Math.round(end - start)} milliseconds`);
 
 			await tick();
 			mainRef?.focus();
@@ -39,7 +43,7 @@
 	<div bind:this={mainRef} tabindex="-1">
 		<div class="matchups-container">
 			{#if matchups.length > 0}
-				{#each matchups as matchup, index (matchup.pokemon1.id + '-' + matchup.pokemon2.id)}
+				{#each matchups as matchup, index (matchup.pokemon1.id + '-' + matchup.pokemon2.id + '-' + index)}
 					<div class="matchup" style:display={index === 0 ? null : 'none'}>
 						<form method="POST" use:enhance={voteEnhance}>
 							<input type="hidden" name="pokemon1_id" value={matchup.pokemon1.id} />
