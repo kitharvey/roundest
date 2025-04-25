@@ -1,50 +1,70 @@
 import type { DrizzleD1Database } from 'drizzle-orm/d1';
 import { pokemon, votes } from '$lib/server/db/schema';
-import { sql, eq } from 'drizzle-orm';
+import { sql, eq, and } from 'drizzle-orm';
 
-// Add image to the interface
 interface PokemonWithStats {
 	id: number;
 	name: string;
-	image: string; // Added this field
+	image: string;
 	winCount: number;
 	totalVotes: number;
 	winRate: number;
 }
 
-export async function getRankings(db: DrizzleD1Database): Promise<PokemonWithStats[]> {
-	// Add image to the select query
-	const result = await db
+export async function getRankings(
+	db: DrizzleD1Database,
+	limit: number,
+	offset: number,
+	searchTerm?: string
+): Promise<{ rankings: PokemonWithStats[]; total: number }> {
+	let query = db
 		.select({
 			id: pokemon.id,
 			name: pokemon.name,
 			image: pokemon.image,
-			winCount: sql<number>`COUNT(CASE WHEN ${votes.voteType} = 'win' THEN 1 END)`,
-			totalVotes: sql<number>`COUNT(${votes.id})`
+			winCount: sql<number>`COUNT(CASE WHEN ${votes.voteType} = 'win' THEN 1 END)`.as('winCount'),
+			totalVotes: sql<number>`COUNT(${votes.id})`.as('totalVotes'),
+			winRate: sql<number>`
+                CASE
+                    WHEN COUNT(${votes.id}) > 0
+                    THEN (CAST(SUM(CASE WHEN ${votes.voteType} = 'win' THEN 1 ELSE 0 END) AS REAL) * 100.0 / COUNT(${votes.id}))
+                    ELSE 0
+                END
+            `.as('winRate')
 		})
 		.from(pokemon)
-		.leftJoin(votes, eq(pokemon.id, votes.pokemonId))
-		.groupBy(pokemon.id, pokemon.name, pokemon.image);
+		.leftJoin(votes, eq(pokemon.id, votes.pokemonId));
 
-	// Include image in the rankings mapping
-	const rankings = result.map((row) => {
-		const winRate = row.totalVotes > 0 ? (row.winCount / row.totalVotes) * 100 : 0;
-		return {
-			id: row.id,
-			name: row.name,
-			image: row.image,
-			winCount: row.winCount,
-			totalVotes: row.totalVotes,
-			winRate
-		};
-	});
+	if (searchTerm) {
+		query = query.where(and(sql`LOWER(${pokemon.name}) LIKE LOWER(${`%${searchTerm}%`})`));
+	}
 
-	rankings.sort((a, b) => {
-		if (b.winRate !== a.winRate) {
-			return b.winRate - a.winRate;
-		}
-		return b.totalVotes - a.totalVotes;
-	});
+	const rankingsQuery = query
+		.groupBy(pokemon.id, pokemon.name, pokemon.image)
+		.orderBy(sql`winRate DESC`, sql`totalVotes DESC`)
+		.limit(limit)
+		.offset(offset);
 
-	return rankings;
+	let totalQuery = db.select({ count: sql<number>`COUNT(${pokemon.id})` }).from(pokemon);
+
+	if (searchTerm) {
+		totalQuery = totalQuery.where(
+			and(sql`LOWER(${pokemon.name}) LIKE LOWER(${`%${searchTerm}%`})`)
+		);
+	}
+
+	const [rankingsResult, totalResult] = await Promise.all([rankingsQuery, totalQuery]);
+
+	const rankings = rankingsResult.map((row) => ({
+		id: row.id,
+		name: row.name,
+		image: row.image,
+		winCount: row.winCount,
+		totalVotes: row.totalVotes,
+		winRate: row.winRate
+	}));
+
+	const total = totalResult[0]?.count ?? 0;
+
+	return { rankings, total };
 }

@@ -12,7 +12,6 @@
 	let disabled = $state(false);
 
 	const voteEnhance: SubmitFunction = async () => {
-		const start = performance.now();
 		disabled = true;
 		return async ({ result }) => {
 			if (result.type === 'success') {
@@ -21,8 +20,6 @@
 				matchups.shift();
 			}
 
-			const end = performance.now();
-			console.log(`Vote enhance took ${Math.round(end - start)} milliseconds`);
 			disabled = false;
 			await tick();
 			mainRef?.focus();

@@ -1,16 +1,24 @@
 <script lang="ts">
 	import Image from '$lib/components/app/Image.svelte';
 	import type { PageProps } from './$types';
+	import { goto } from '$app/navigation';
 
 	let { data }: PageProps = $props();
-	let { rankings } = $derived(data);
+	let { rankings, total } = $derived(data);
+
+	function loadMore() {
+		const newLimit = rankings.length + 10;
+		const url = new URL(window.location.origin + window.location.pathname);
+		url.searchParams.set('limit', newLimit.toString());
+		goto(url.toString() + `#${rankings.length}`);
+	}
 </script>
 
 <div class="rankings-container">
 	<h1>Pokémon Rankings by Winrate</h1>
 	<div class="rankings-list">
 		{#each rankings as pokemon, index}
-			<div class="pokedex-entry">
+			<div class="pokedex-entry" id={(index + 1).toString()}>
 				<div class="rank-badge">
 					<span>#{index + 1}</span>
 				</div>
@@ -37,6 +45,9 @@
 			</div>
 		{/each}
 	</div>
+	{#if rankings.length < total}
+		<button onclick={loadMore}>Load More</button>
+	{/if}
 </div>
 
 <style>
@@ -59,6 +70,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1.5rem;
+		padding-bottom: 2rem;
 	}
 
 	.pokedex-entry {
@@ -144,6 +156,22 @@
 		color: var(--accent-secondary); /* Muted gold (#d4af37) for values */
 	}
 
+	button {
+		display: block;
+		margin: 1rem auto;
+		padding: 0.5rem 1rem;
+		background-color: var(--accent-primary); /* Deep red (#8b0000) */
+		color: var(--button-text); /* White (#ffffff) */
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+		font-size: 1rem;
+	}
+
+	button:hover {
+		background-color: #a30000; /* Slightly lighter red for hover */
+	}
+
 	@media (max-width: 768px) {
 		.rankings-container {
 			padding: 1rem;
@@ -184,6 +212,11 @@
 
 		h1 {
 			font-size: 1.5rem;
+		}
+
+		button {
+			padding: 0.4rem 0.8rem;
+			font-size: 0.9rem;
 		}
 	}
 </style>
