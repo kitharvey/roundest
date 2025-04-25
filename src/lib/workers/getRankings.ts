@@ -1,6 +1,6 @@
 import type { DrizzleD1Database } from 'drizzle-orm/d1';
 import { pokemon, votes } from '$lib/server/db/schema';
-import { sql, eq, and } from 'drizzle-orm';
+import { sql, eq, like, count } from 'drizzle-orm'; // Changed: removed ilike, added like and lower
 
 interface PokemonWithStats {
 	id: number;
@@ -35,8 +35,10 @@ export async function getRankings(
 		.from(pokemon)
 		.leftJoin(votes, eq(pokemon.id, votes.pokemonId));
 
+	// Apply search term filter using like and lower if provided
 	if (searchTerm) {
-		query = query.where(and(sql`LOWER(${pokemon.name}) LIKE LOWER(${`%${searchTerm}%`})`));
+		// Prepare the search pattern (Drizzle handles escaping for the value)
+		query = query.where(like(sql`lower(${pokemon.name})`, `%${searchTerm.toLowerCase()}%`)); // Changed: Replaced ilike with like(lower(...), lower(...))
 	}
 
 	const rankingsQuery = query
@@ -45,25 +47,34 @@ export async function getRankings(
 		.limit(limit)
 		.offset(offset);
 
-	let totalQuery = db.select({ count: sql<number>`COUNT(${pokemon.id})` }).from(pokemon);
+	// Use Drizzle's count() for the total query
+	let totalQueryBase = db.select({ count: count(pokemon.id) }).from(pokemon);
 
+	// Apply the same search term filter to the total query
 	if (searchTerm) {
-		totalQuery = totalQuery.where(
-			and(sql`LOWER(${pokemon.name}) LIKE LOWER(${`%${searchTerm}%`})`)
-		);
+		// Use lower() on both column and pattern with like for case-insensitivity
+		totalQueryBase = totalQueryBase.where(
+			like(sql`lower(${pokemon.name})`, `%${searchTerm.toLowerCase()}%`)
+		); // Changed: Replaced ilike with like(lower(...), lower(...))
 	}
+	// Assign the potentially filtered query
+	const totalQuery = totalQueryBase;
 
-	const [rankingsResult, totalResult] = await Promise.all([rankingsQuery, totalQuery]);
+	const [rankingsResult, totalResult] = await Promise.all([
+		rankingsQuery.execute(),
+		totalQuery.execute()
+	]);
 
 	const rankings = rankingsResult.map((row) => ({
 		id: row.id,
 		name: row.name,
 		image: row.image,
-		winCount: row.winCount,
-		totalVotes: row.totalVotes,
-		winRate: row.winRate
+		winCount: Number(row.winCount ?? 0), // Ensure number type, handle potential null from COUNT
+		totalVotes: Number(row.totalVotes ?? 0), // Ensure number type, handle potential null from COUNT
+		winRate: Number(row.winRate ?? 0.0) // Ensure number type, handle potential null/NaN
 	}));
 
+	// Use count() result directly
 	const total = totalResult[0]?.count ?? 0;
 
 	return { rankings, total };
