@@ -12,7 +12,7 @@
 		HOME_TITLE,
 		VOTE_TITLE,
 		RESULTS_TITLE
-	} from '../../../contants';
+	} from '../../../constants';
 
 	let title = $derived(
 		page.url.pathname === '/'
