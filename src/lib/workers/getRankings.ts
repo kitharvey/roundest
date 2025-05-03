@@ -35,10 +35,8 @@ export async function getRankings(
 		.from(pokemon)
 		.leftJoin(votes, eq(pokemon.id, votes.pokemonId));
 
-	// Apply search term filter using like and lower if provided
 	if (searchTerm) {
-		// Prepare the search pattern (Drizzle handles escaping for the value)
-		query = query.where(like(sql`lower(${pokemon.name})`, `%${searchTerm.toLowerCase()}%`)); // Changed: Replaced ilike with like(lower(...), lower(...))
+		query = query.where(like(sql`lower(${pokemon.name})`, `%${searchTerm.toLowerCase()}%`));
 	}
 
 	const rankingsQuery = query
@@ -47,17 +45,13 @@ export async function getRankings(
 		.limit(limit)
 		.offset(offset);
 
-	// Use Drizzle's count() for the total query
 	let totalQueryBase = db.select({ count: count(pokemon.id) }).from(pokemon);
 
-	// Apply the same search term filter to the total query
 	if (searchTerm) {
-		// Use lower() on both column and pattern with like for case-insensitivity
 		totalQueryBase = totalQueryBase.where(
 			like(sql`lower(${pokemon.name})`, `%${searchTerm.toLowerCase()}%`)
-		); // Changed: Replaced ilike with like(lower(...), lower(...))
+		);
 	}
-	// Assign the potentially filtered query
 	const totalQuery = totalQueryBase;
 
 	const [rankingsResult, totalResult] = await Promise.all([
@@ -69,12 +63,11 @@ export async function getRankings(
 		id: row.id,
 		name: row.name,
 		image: row.image,
-		winCount: Number(row.winCount ?? 0), // Ensure number type, handle potential null from COUNT
-		totalVotes: Number(row.totalVotes ?? 0), // Ensure number type, handle potential null from COUNT
-		winRate: Number(row.winRate ?? 0.0) // Ensure number type, handle potential null/NaN
+		winCount: Number(row.winCount ?? 0),
+		totalVotes: Number(row.totalVotes ?? 0),
+		winRate: Number(row.winRate ?? 0.0)
 	}));
 
-	// Use count() result directly
 	const total = totalResult[0]?.count ?? 0;
 
 	return { rankings, total };

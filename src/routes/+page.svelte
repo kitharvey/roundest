@@ -6,38 +6,45 @@
 	let { pokemons } = $derived(data);
 </script>
 
-<div class="page">
-	<div class="hero-content">
-		<h1>Who's Rounder?</h1>
-		<p class="subtitle">Vote for the roundest Pokémon!</p>
-		<a data-sveltekit-preload-data="hover" href="/vote" class="start-button">Start Voting</a>
-	</div>
-	<div class="card-background">
-		<div class="card-scroller">
-			{#each pokemons as pokemon}
-				{#if pokemon}
-					<Card {pokemon} />
-				{/if}
-			{/each}
-			{#each pokemons as pokemon}
-				{#if pokemon}
-					<Card {pokemon} />
-				{/if}
-			{/each}
+<main>
+	<div class="page">
+		<div class="hero-content">
+			<h1>Who's Rounder?</h1>
+			<p class="subtitle">Vote for the roundest Pokémon!</p>
+			<a data-sveltekit-preload-data="hover" href="/vote" class="start-button">Start Voting</a>
+		</div>
+		<div class="card-background">
+			<div class="card-scroller">
+				{#each pokemons as pokemon}
+					{#if pokemon}
+						<Card {pokemon} />
+					{/if}
+				{/each}
+				{#each pokemons as pokemon}
+					{#if pokemon}
+						<Card {pokemon} />
+					{/if}
+				{/each}
+			</div>
 		</div>
 	</div>
-</div>
+</main>
 
 <style>
+	main {
+		overflow: hidden;
+		height: 100dvh;
+		width: 100%;
+	}
 	.page {
 		position: relative;
 		display: flex;
 		align-items: center;
 		justify-content: flex-start;
 		height: 100dvh;
+		max-width: 1400px;
+		margin: 0 auto;
 		padding: 3rem 5rem 5rem;
-		background: linear-gradient(135deg, var(--background-start), var(--background-end));
-		overflow: hidden; /* Prevent scrolling */
 	}
 
 	.hero-content {
@@ -91,7 +98,7 @@
 		justify-content: center;
 		align-content: flex-start; /* Start from the top for scrolling */
 		transform: rotate(15deg); /* Tilt the entire container 5 degrees to the right */
-		overflow: hidden; /* Prevent overflow from container */
+		overflow-y: hidden; /* Prevent overflow from container */
 		user-select: none;
 	}
 
@@ -116,6 +123,9 @@
 
 	/* Responsive Adjustments */
 	@media (max-width: 768px) {
+		main {
+			overflow: hidden;
+		}
 		.page {
 			padding: 2rem 1rem;
 			width: 100%;
