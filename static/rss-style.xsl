@@ -1,40 +1,142 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-    <xsl:output method="html" encoding="UTF-8" indent="yes"/>
-
-    <xsl:template match="/rss/channel">
-        <html>
-            <head>
-                <title><xsl:value-of select="title"/></title>
-                <link rel="stylesheet" type="text/css" href="/rss-style.css"/>
-                <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-            </head>
-            <body>
-                <div class="rss-container">
-                    <header class="rss-header">
-                        <h1><xsl:value-of select="title"/></h1>
-                        <p><xsl:value-of select="description"/></p>
-                        <p><a href="{link}" target="_blank"><xsl:value-of select="link"/></a></p>
-                    </header>
-                    <hr/>
-                    <main class="rss-items">
-                        <h2>Feed Items</h2>
-                        <xsl:apply-templates select="item"/>
-                    </main>
-                    <footer class="rss-footer">
-                        <p>RSS feed generated on: <xsl:value-of select="lastBuildDate"/></p>
-                    </footer>
+<xsl:output method="html" version="1.0" encoding="UTF-8" indent="yes"/>
+<xsl:template match="/">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title><xsl:value-of select="rss/channel/title"/> RSS Feed</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <style type="text/css">
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: #f9f9f9;
+    }
+    header {
+        background: #6366f1;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+        margin: 0;
+        padding: 0;
+        font-size: 2.5rem;
+    }
+    h2 {
+        font-size: 1.8rem;
+        margin-top: 0;
+        color: #2563eb;
+    }
+    .channel-description {
+        font-size: 1.2rem;
+        margin-top: 1rem;
+        opacity: 0.9;
+    }
+    .meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9rem;
+        color: #666;
+        margin: 0.5rem 0;
+    }
+    article {
+        background: white;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        border-left: 5px solid #6366f1;
+    }
+    .feed-link {
+        background: #eef2ff;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 1rem;
+        font-weight: 500;
+    }
+    a {
+        color: #2563eb;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+    a:hover {
+        color: #1e40af;
+        text-decoration: underline;
+    }
+    footer {
+        margin-top: 2rem;
+        text-align: center;
+        font-size: 0.9rem;
+        color: #666;
+    }
+    @media (max-width: 600px) {
+        body {
+            padding: 1rem;
+        }
+        header {
+            padding: 1rem;
+        }
+        h1 {
+            font-size: 1.8rem;
+        }
+    }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><xsl:value-of select="rss/channel/title"/></h1>
+        <div class="channel-description">
+            <xsl:value-of select="rss/channel/description"/>
+        </div>
+    </header>
+    
+    <main>
+        <div class="feed-link">
+            <p>This is an RSS feed. Visit <a href="{rss/channel/link}">the website</a> or subscribe to this feed using your favorite RSS reader.</p>
+            <p>
+                <a href="{rss/channel/link}">
+                    <xsl:value-of select="rss/channel/link"/>
+                </a>
+            </p>
+        </div>
+        
+        <xsl:for-each select="rss/channel/item">
+            <article>
+                <h2>
+                    <a href="{link}" target="_blank">
+                        <xsl:value-of select="title"/>
+                    </a>
+                </h2>
+                <div class="meta">
+                    <span>
+                        <xsl:value-of select="pubDate"/>
+                    </span>
+                    <xsl:if test="author">
+                        <span>
+                            By: <xsl:value-of select="author"/>
+                        </span>
+                    </xsl:if>
                 </div>
-            </body>
-        </html>
-    </xsl:template>
-
-    <xsl:template match="item">
-        <article class="rss-item">
-            <h3><a href="{link}" target="_blank"><xsl:value-of select="title"/></a></h3>
-            <p><xsl:value-of select="description"/></p>
-            <p class="rss-pubDate">Published: <xsl:value-of select="pubDate"/></p>
-        </article>
-    </xsl:template>
-
+                <div class="description">
+                    <xsl:value-of select="description" disable-output-escaping="yes"/>
+                </div>
+            </article>
+        </xsl:for-each>
+    </main>
+    
+    <footer>
+        <p>Last updated: <xsl:value-of select="rss/channel/lastBuildDate"/></p>
+        <p>Generated by <xsl:value-of select="rss/channel/generator"/></p>
+    </footer>
+</body>
+</html>
+</xsl:template>
 </xsl:stylesheet>

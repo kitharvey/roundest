@@ -1,6 +1,6 @@
 // src/routes/robots.txt/+server.ts (or .js)
 
-import { SITE_BASE_URL } from '../../contants';
+import { SITE_BASE_URL } from '../../constants';
 
 export async function GET() {
 	const robotsContent = `

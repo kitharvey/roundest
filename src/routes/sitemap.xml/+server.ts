@@ -1,30 +1,60 @@
-import { SITE_BASE_URL } from '../../contants';
+// src/routes/sitemap.xml/+server.ts
 
-const staticPages: string[] = ['/', '/vote', '/results'];
+import { escapeXml } from '$lib/helpers/escapeXml';
+import { SITE_BASE_URL } from '../../constants';
+
+interface SitemapEntry {
+	path: string;
+	lastmod?: string;
+	changefreq?: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
+	priority?: number;
+}
 
 export async function GET() {
-	const allPaths = staticPages;
+	const staticPages: SitemapEntry[] = [
+		{
+			path: '/',
+			changefreq: 'daily',
+			priority: 1.0
+		},
+		{
+			path: '/vote',
+			changefreq: 'daily',
+			priority: 0.9
+		},
+		{
+			path: '/results',
+			changefreq: 'weekly',
+			priority: 0.8
+		}
+	];
 
-	const urlElements = allPaths
-		.map((path) => {
-			const fullUrl = `${SITE_BASE_URL}${path}`;
-			const lastmod = new Date().toISOString().split('T')[0];
-			const changefreq = 'weekly';
-			const priority = path === '/' ? '1.0' : '0.8';
+	const today = new Date().toISOString().split('T')[0];
 
-			const escapedUrl = fullUrl
-				.replace(/&/g, '&amp;')
-				.replace(/</g, '&lt;')
-				.replace(/>/g, '&gt;')
-				.replace(/"/g, '&quot;')
-				.replace(/'/g, '&apos;');
+	const allPages = staticPages.map((page) => ({
+		...page,
+		lastmod: page.lastmod || today
+	}));
+
+	const urlElements = allPages
+		.map((page) => {
+			const fullUrl = `${SITE_BASE_URL}${page.path}`;
+			const escapedUrl = escapeXml(fullUrl);
+
+			// Only include optional elements if they exist
+			const lastmodElement = page.lastmod ? `<lastmod>${page.lastmod}</lastmod>` : '';
+			const changefreqElement = page.changefreq
+				? `<changefreq>${page.changefreq}</changefreq>`
+				: '';
+			const priorityElement =
+				page.priority !== undefined ? `<priority>${page.priority.toFixed(1)}</priority>` : '';
 
 			return `
     <url>
         <loc>${escapedUrl}</loc>
-        <lastmod>${lastmod}</lastmod>
-        <changefreq>${changefreq}</changefreq>
-        <priority>${priority}</priority>
+        ${lastmodElement}
+        ${changefreqElement}
+        ${priorityElement}
     </url>`;
 		})
 		.join('');
@@ -32,12 +62,13 @@ export async function GET() {
 	const sitemapXml = `<?xml version="1.0" encoding="UTF-8" ?>
 <urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
     ${urlElements}
-</urlset>`.trim();
+</urlset>`;
 
 	return new Response(sitemapXml, {
 		headers: {
 			'Content-Type': 'application/xml',
-			'Cache-Control': 'public, max-age=600' // Adjust cache duration as needed
+			'Cache-Control': 'public, max-age=3600',
+			'X-Content-Type-Options': 'nosniff'
 		}
 	});
 }
