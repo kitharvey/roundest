@@ -334,15 +334,9 @@
 		}
 
 		.rank-badge {
-			width: 45px; /* Slightly larger */
-			height: 45px;
-			min-width: 45px;
-			font-size: 1rem; /* Adjust font size */
 			position: absolute; /* Position badge absolutely */
-			top: -15px; /* Position slightly outside the top border */
-			left: 50%; /* Center horizontally */
-			transform: translateX(-50%); /* Precise centering */
-			margin-right: 0; /* Remove margin */
+			top: 10px; /* Position slightly outside the top border */
+			left: 10px; /* Center horizontally */
 			z-index: 2; /* Ensure badge is above ::before */
 		}
 
@@ -372,7 +366,6 @@
 			width: 40px;
 			height: 40px;
 			min-width: 40px;
-			top: -12px; /* Adjust position */
 		}
 
 		.rank-badge span {
@@ -392,7 +385,6 @@
 			font-size: 0.85rem;
 		}
 
-		/* Adjust button sizes for very small screens */
 		form[method='POST'] button,
 		.search-container button {
 			padding: 0.5rem 1rem;
@@ -400,8 +392,7 @@
 		}
 
 		.pokemon-info :global(img.thumb) {
-			/* Target image using :global */
-			width: 60px; /* Reduce image size */
+			width: 60px;
 			height: 60px;
 		}
 	}
