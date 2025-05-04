@@ -19,9 +19,6 @@
 	let session = $derived(authClient.useSession());
 </script>
 
-<svelte:head>
-	<title>Roundest</title>
-</svelte:head>
 <BaseHead />
 <header>
 	<div class="header-content">
@@ -54,7 +51,6 @@
 		width: 100%;
 	}
 
-	/* Header and Navigation */
 	header {
 		position: fixed;
 		top: 0;
@@ -106,7 +102,6 @@
 		color: var(--accent-secondary);
 	}
 
-	/* Main Content */
 	main {
 		background: linear-gradient(135deg, var(--background-start), var(--background-end));
 		color: var(--text-primary);

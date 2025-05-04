@@ -40,7 +40,7 @@
 		JSON.stringify({
 			'@context': 'https://schema.org',
 			'@type': 'WebSite',
-			name: SITE_NAME,
+			name: title,
 			url: canonicalUrl,
 			description: description
 		})

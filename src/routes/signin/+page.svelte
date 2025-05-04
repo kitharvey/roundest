@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { authClient } from '$lib/auth/client';
+	import { onMount } from 'svelte';
 
 	const signIn = async () => {
 		const data = await authClient.signIn.social({
@@ -8,6 +9,10 @@
 		});
 		console.log(data);
 	};
+
+	onMount(async () => {
+		await authClient.signOut();
+	});
 </script>
 
 <main class="container">
