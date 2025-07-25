@@ -28,7 +28,7 @@ export async function getPokemons(
 					const sprite = details.sprites.other?.['official-artwork']?.front_default;
 
 					if (sprite) {
-						const image = `pokemon/${details.id}.png`;
+						const image = `https://pokemon-images.kitharvey.dev/pokemon/${details.id}.png`;
 						const types = details.types.map((typeInfo) => typeInfo.type.name) as PokemonType[];
 
 						await db
