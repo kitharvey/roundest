@@ -16,7 +16,7 @@ export const actions: Actions = {
 		const pokemon2Id = Number(data.get('pokemon2_id'));
 
 		if (isNaN(winnerId) || isNaN(pokemon1Id) || isNaN(pokemon2Id)) {
-			return { success: false, error: 'Invalid input data' };
+			return { success: false, error: 'Invalid input data', matchup: null };
 		}
 
 		const loserId = winnerId === pokemon1Id ? pokemon2Id : pokemon1Id;
@@ -29,10 +29,10 @@ export const actions: Actions = {
 				]),
 				getMatchupsOptimized(db, 1)
 			]);
-			return { success: true, matchup };
+			return { success: true, error: null, matchup };
 		} catch (error) {
 			console.error('Vote recording failed:', error);
-			return { success: false, error: 'Failed to record vote' };
+			return { success: false, error: 'Failed to record vote', matchup: null };
 		}
 	}
 };
