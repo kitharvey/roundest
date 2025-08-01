@@ -17,27 +17,17 @@
 	}>();
 
 	const isTransform = page.url.searchParams.get('transform') !== 'false';
-	const imgBaseUrl = page.url.searchParams.get('imgBaseUrl') || '';
 
 	const isProd = import.meta.env.PROD;
 
 	let size = $derived(variant === 'card' ? '200' : variant === 'thumb' ? '100' : '32');
 
-	let cleanSrc = $derived(
-		imgBaseUrl ===
-			'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/'
-			? src.replace('pokemon/', '')
-			: src
-	);
-
 	let opts = $derived(
 		`width=${size},height=${size},fit=scale-down,compression=fast,slow-connection-quality=50,quality=70,format=webp`
 	);
 
-	let source = $derived(imgBaseUrl ? imgBaseUrl + cleanSrc : cleanSrc);
-
 	let transformedSrc = $derived(
-		isProd && isTransform ? `/cdn-cgi/image/${opts}/${encodeURIComponent(source)}` : source
+		isProd && isTransform ? `/cdn-cgi/image/${opts}/${encodeURIComponent(src)}` : src
 	);
 </script>
 
