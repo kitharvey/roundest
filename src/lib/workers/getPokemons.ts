@@ -10,12 +10,25 @@ export async function getPokemons(
 ): Promise<GetPokemonsResult> {
 	const logs: string[] = [];
 	let savedCount = 0;
-
+	const maxPokemon = 10258;
 	try {
 		logs.push(`[Process Start] Syncing Pokémon (offset: ${offset}, limit: ${limit})...`);
 
+		// Adjust limit to not exceed maxPokemon
+		const effectiveLimit = Math.min(limit, maxPokemon - offset);
+		if (effectiveLimit <= 0) {
+			return {
+				message: 'Offset exceeds maximum Pokémon ID',
+				saved: 0,
+				total: 0,
+				offset,
+				limit,
+				logs
+			};
+		}
+
 		const listResponse = await fetchWithRetry(
-			`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`
+			`https://pokeapi.co/api/v2/pokemon?limit=${effectiveLimit}&offset=${offset}`
 		);
 		const { results }: { results: PokemonResponse[] } = await listResponse.json();
 		logs.push(`[List Fetch Success] Fetched ${results.length} Pokémon.`);
@@ -25,6 +38,13 @@ export async function getPokemons(
 				try {
 					const response = await fetchWithRetry(pokemon.url);
 					const details: PokemonDetails = await response.json();
+
+					// Skip if Pokémon ID exceeds maxPokemon
+					if (details.id > maxPokemon) {
+						logs.push(`[Skipped] Pokémon ID ${details.id} exceeds maxPokemon (${maxPokemon})`);
+						return;
+					}
+
 					const sprite = details.sprites.other?.['official-artwork']?.front_default;
 
 					if (sprite) {
